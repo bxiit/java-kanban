@@ -1,26 +1,32 @@
 package task;
 
-
 import java.util.Objects;
 
 public class Task {
-    private Long ID;
+    private long id;
     private String title;
     private String description;
-    private State state;
+    private Status status;
 
-    public Task(String title, String description) {
+    public Task(long id, String title, String description, Status status) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.state = State.NEW;
+        this.status = status;
     }
 
-    public Long getID() {
-        return ID;
+    public Task(String title, String description, Status status) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -39,12 +45,12 @@ public class Task {
         this.description = description;
     }
 
-    public State getState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -52,21 +58,21 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(ID, task.ID);
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "ID=" + ID +
+                "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", state=" + state +
+                ", status=" + status +
                 '}';
     }
 }

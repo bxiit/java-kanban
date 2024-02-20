@@ -4,61 +4,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    public List<SubTask> subTasks;
-    public Epic(String title, String description) {
-        super(title, description);
-        subTasks = new ArrayList<>();
+    private final long id;
+    private String title;
+    private String description;
+    private Status status;
+    private List<SubTask> subtasks;
+
+    public Epic(long id, String title, String description, Status status) {
+        super(id, title, description, status);
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.subtasks = new ArrayList<>();
     }
 
-    public void addSubTask(SubTask subTask) {
-        subTask.epic = this;
-        subTask.setState(State.NEW);
-        subTasks.add(subTask);
+    public void addSubtask(SubTask subtask) {
+        subtasks.add(subtask);
     }
 
-    public List<SubTask> getSubTasks() {
-        return subTasks;
+    public void removeSubTask(SubTask subTask) {
+        subtasks.remove(subTask);
     }
 
-    public SubTask getSubTask(Long id) {
-        return subTasks.get(id.intValue() - 1);
+    @Override
+    public String getTitle() {
+        return title;
     }
 
-    public State getState() {
-        if (checkForDone()) {
-            setState(State.DONE);
-            return State.DONE;
-        } else if (checkForNew()) {
-            setState(State.NEW);
-            return State.NEW;
-        } else {
-            setState(State.IN_PROGRESS);
-            return State.IN_PROGRESS;
-        }
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public boolean checkForDone() {
-        for (SubTask subTask : subTasks) {
-            if (subTask.getState() != State.DONE) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public String getDescription() {
+        return description;
     }
 
-    public boolean checkForNew() {
-        for (SubTask subTask : subTasks) {
-            if (subTask.getState() != State.NEW) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setSubtasks(List<SubTask> subtasks) {
+        this.subtasks = subtasks;
+    }
+
+    public List<SubTask> getSubtasks() {
+        return subtasks;
     }
 
     @Override
     public String toString() {
-        return "Epic{" + super.toString() +
-                "subTasks=" + subTasks +
+        return "Epic{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", subtasks=" + subtasks +
                 '}';
+    }
+
+    @Override
+    public long getId() {
+        return id;
     }
 }
