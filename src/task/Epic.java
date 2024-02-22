@@ -4,80 +4,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private final long id;
-    private String title;
-    private String description;
-    private Status status;
+
     private List<SubTask> subtasks;
 
-    public Epic(long id, String title, String description, Status status) {
-        super(id, title, description, status);
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.subtasks = new ArrayList<>();
-    }
-
-    public void addSubtask(SubTask subtask) {
-        subtasks.add(subtask);
-    }
-
-    public void removeSubTask(SubTask subTask) {
-        subtasks.remove(subTask);
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public Status getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setSubtasks(List<SubTask> subtasks) {
+    public Epic(String name, String description, Status status, List<SubTask> subtasks) {
+        super(name, description, status);
         this.subtasks = subtasks;
+    }
+
+    public Epic(String name, String description) {
+        super(name, description);
+        this.subtasks = new ArrayList<>();
     }
 
     public List<SubTask> getSubtasks() {
         return subtasks;
     }
 
-    @Override
-    public String toString() {
-        return "Epic{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", subtasks=" + subtasks +
-                '}';
+    public void addSubtask(SubTask subtask) {
+        subtasks.add(subtask);
+    }
+
+    public void removeSubtask(SubTask subtask) {
+        subtasks.remove(subtask);
     }
 
     @Override
-    public long getId() {
-        return id;
+    public String toString() {
+        return String.format("Эпик №%d: %s (%s)", getId(), getName(), getStatus());
+    }
+
+    public void calculateStatus() {
+        if (subtasks.isEmpty()) {
+            setStatus(Status.NEW);
+            return;
+        }
+
+        boolean allNew = true;
+        boolean allDone = true;
+        for (SubTask subtask : subtasks) {
+            if (subtask.getStatus() != Status.NEW) {
+                allNew = false;
+            }
+            if (subtask.getStatus() != Status.DONE) {
+                allDone = false;
+            }
+        }
+
+        if (allNew) {
+            setStatus(Status.NEW);
+        } else if (allDone) {
+            setStatus(Status.DONE);
+        } else {
+            setStatus(Status.IN_PROGRESS);
+        }
     }
 }

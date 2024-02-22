@@ -1,129 +1,127 @@
 package manager;
 
 import task.Epic;
-import task.Status;
 import task.SubTask;
 import task.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TaskManager {
-    public static long id = 0L;
-    HashMap<Long, Task> tasks = new HashMap<>();
-    HashMap<Epic, ArrayList<SubTask>> epics = new HashMap<>();
-    public void printAllTasks() {
-        System.out.println(tasks);
+
+    private static long manageId = 0L;
+    private Map<Long, Task> tasks;
+    private Map<Long, SubTask> subtasks;
+    private Map<Long, Epic> epics;
+
+    public TaskManager() {
+        tasks = new HashMap<>();
+        subtasks = new HashMap<>();
+        epics = new HashMap<>();
     }
 
-    public void printAllEpics() {
-        System.out.println(epics);
+    public static long manageId() {
+        return ++manageId;
     }
 
-    public long countId() {
-        return ++id;
-    }
-
-    // (a)
-    public HashMap<Long, Task> getTasks() {
-        return tasks;
-    }
-    public HashMap<Epic, ArrayList<SubTask>> getEpics() {
-        return epics;
-    }
-
-    // (b)
-    public void removeAllTasks() {
-        tasks.clear();
-    }
-    public void removeAllEpics() {
-        epics.clear();
-    }
-
-    // (c)
-    public Task getTaskById(long id) {
-        if (tasks.get(id) != null) {
-            return tasks.get(id);
-        } else if (getEpicById(id) != null) {
-            return getEpicById(id);
-        } else {
-            return null;
-        }
-    }
-    public Epic getEpicById(long id) {
-        for (Epic epic : epics.keySet()) {
-            if (epic.getId() == id) {
-                return epic;
-            }
-        }
-        return null;
-    }
-
-    // (d)
     public void addTask(Task task) {
         tasks.put(task.getId(), task);
     }
-    public void addEpic(Epic epic) {
-        epics.put(epic, (ArrayList<SubTask>) epic.getSubtasks());
+
+    public Task getTask(long id) {
+        return tasks.get(id);
     }
 
-    // (e)
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
     }
-    public void updateEpic(Epic epic) {
-        epics.put(epic, (ArrayList<SubTask>) epic.getSubtasks());
-    }
 
-    // (f)
-    public void removeTaskById(long id) {
+    public void deleteTask(long id) {
         tasks.remove(id);
     }
-    public void removeEpicById(long id) {
-        for (Epic epic : epics.keySet()) {
-            if (epic.getId() == id) {
-                epics.remove(epic);
-            }
+
+    // CRUD-операции для подзадач
+    public void addSubtask(SubTask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+        Epic epic = subtask.getEpic();
+        epic.addSubtask(subtask);
+        epics.put(epic.getId(), epic);
+    }
+
+    public SubTask getSubtask(long id) {
+        return subtasks.get(id);
+    }
+
+    public List<SubTask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
+    public void updateSubtask(SubTask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+        Epic epic = subtask.getEpic();
+        epic.calculateStatus();
+        epics.put(epic.getId(), epic);
+    }
+
+    public void deleteSubtask(long id) {
+        SubTask subtask = subtasks.remove(id);
+        Epic epic = subtask.getEpic();
+        epic.removeSubtask(subtask);
+        epic.calculateStatus();
+        epics.put(epic.getId(), epic);
+    }
+
+    // CRUD-операции для эпиков
+    public void addEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    public Epic getEpic(long id) {
+        return epics.get(id);
+    }
+
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    public void deleteEpic(long id) {
+        Epic epic = epics.remove(id);
+        for (SubTask subtask : epic.getSubtasks()) {
+            subtasks.remove(subtask.getId());
         }
     }
 
-    public void changeTaskStatus(long id, Status status) {
-        tasks.get(id).setStatus(status);
+    // Получение списка подзадач эпика
+    public List<SubTask> getEpicSubtasks(Epic epic) {
+        return epic.getSubtasks();
     }
 
-    public void changeSubTaskStatus(Epic epic, SubTask subtask, Status status) {
-        subtask.setStatus(status);
-
-        if (checkEpicStatusForDONE()) {
-            epic.setStatus(Status.DONE);
-        } else if (checkEpicStatusForNEW()) {
-            epic.setStatus(Status.NEW);
-        } else {
-            epic.setStatus(Status.IN_PROGRESS);
+    // Печать списков
+    public void printTasks() {
+        for (Task task : getAllTasks()) {
+            System.out.println(task);
         }
     }
 
-    private boolean checkEpicStatusForDONE() {
-        for (Epic epic : epics.keySet()) {
-            for (SubTask subtask : epic.getSubtasks()) {
-                if (!Status.DONE.equals(subtask.getStatus())) {
-                    epic.setStatus(Status.IN_PROGRESS);
-                    return false;
-                }
-            }
+    public void printEpics() {
+        for (Epic epic : getAllEpics()) {
+            System.out.println(epic);
         }
-        return true;
     }
 
-    private boolean checkEpicStatusForNEW() {
-        for (Epic epic : epics.keySet()) {
-            for (SubTask subtask : epic.getSubtasks()) {
-                if (!Status.NEW.equals(subtask.getStatus())) {
-                    epic.setStatus(Status.IN_PROGRESS);
-                    return false;
-                }
-            }
+    public void printSubtasks(Epic epic) {
+        for (SubTask subtask : epic.getSubtasks()) {
+            System.out.println(subtask);
         }
-        return true;
     }
 }

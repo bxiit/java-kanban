@@ -5,30 +5,63 @@ import task.SubTask;
 import task.Task;
 
 public class Main {
+
     public static void main(String[] args) {
+        // Менеджер задач
         TaskManager taskManager = new TaskManager();
-        Task task1 = new Task(taskManager.countId(), "Task", "Description", Status.NEW);
-        Epic epic1 = new Epic(taskManager.countId(), "Epic", "Description", Status.NEW);
-        SubTask subTask1 = new SubTask(epic1.getId(), "SubTask", "Description", Status.NEW);
-        SubTask subTask2 = new SubTask(epic1.getId(), "SubTask", "Description", Status.NEW);
-        epic1.addSubtask(subTask1);
-        epic1.addSubtask(subTask2);
-        taskManager.addEpic(epic1);
+
+
+        // Создание задач
+        Task task1 = new Task("Task1", "Task1 desc");
+        Task task2 = new Task("Task2", "Task2 desc");
+
+        // Создание эпиков и подзадач
+        Epic epic1 = new Epic("title epic1", "Эпик 1");
+        SubTask subtask1 = new SubTask("title sub1", "sub1", epic1);
+        SubTask subtask2 = new SubTask("title sub2", "sub2", epic1);
+        epic1.addSubtask(subtask1);
+        epic1.addSubtask(subtask2);
+
+        Epic epic2 = new Epic("title epic2", "epic2");
+        SubTask subtask3 = new SubTask("title sub3", "sub3", epic2);
+        epic2.addSubtask(subtask3);
+
+        // Добавление задач
         taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(epic1);
+        taskManager.addTask(epic2);
 
-//        taskManager.changeSubTaskStatus(epic1, subTask1, Status.DONE);
+        // Печать списков
+        System.out.println("Tasks:");
+        taskManager.printTasks();
+        System.out.println("Epics:");
+        taskManager.printEpics();
+        System.out.println("Subtasks of Epic1:");
+        taskManager.printSubtasks(epic1);
 
-        taskManager.printAllTasks();
-//        taskManager.changeTaskStatus(1, Status.IN_PROGRESS);
-        taskManager.printAllTasks();
+        // Изменение статусов
+        task1.setStatus(Status.IN_PROGRESS);
+        subtask1.setStatus(Status.DONE);
 
-        taskManager.printAllEpics();
+        // Обновление задач
+        taskManager.updateTask(task1);
+        taskManager.updateTask(subtask1);
 
-        System.out.println("taskManager.getEpicById(1) = " + taskManager.getTaskById(1));
+        // Печать после изменений
+        System.out.println("Tasks agter update:");
+        taskManager.printTasks();
+        System.out.println("Epics after update:");
+        taskManager.printEpics();
 
-        taskManager.removeTaskById(1);
-        taskManager.printAllTasks();
+        // Удаление задач
+        taskManager.deleteTask(task2.getId());
+        taskManager.deleteTask(epic2.getId());
 
-        System.out.println("taskManager.getEpicById(1) = " + taskManager.getTaskById(1));
+        // Печать после удаления
+        System.out.println("Tasks after delete:");
+        taskManager.printTasks();
+        System.out.println("Epics after delete:");
+        taskManager.printEpics();
     }
 }
