@@ -12,56 +12,25 @@ public class Main {
 
 
         // Создание задач
-        Task task1 = new Task("Task1", "Task1 desc");
-        Task task2 = new Task("Task2", "Task2 desc");
+        Epic epic1 = new Epic("Epic1", "Epic1 desc");
+        SubTask subTask2 = new SubTask("SubTask1", "SubTask1 desc", epic1);
+        SubTask subTask3 = new SubTask("SubTask2", "SubTask2 desc", epic1);
+        SubTask subTask4 = new SubTask("SubTask3", "SubTask3 desc", epic1);
+        taskManager.addEpic(epic1);
 
-        // Создание эпиков и подзадач
-        Epic epic1 = new Epic("title epic1", "Эпик 1");
-        SubTask subtask1 = new SubTask("title sub1", "sub1", epic1);
-        SubTask subtask2 = new SubTask("title sub2", "sub2", epic1);
-        epic1.addSubtask(subtask1);
-        epic1.addSubtask(subtask2);
+        taskManager.addSubTask(epic1, subTask2);
+        taskManager.addSubTask(epic1, subTask3);
+        taskManager.addSubTask(epic1, subTask4);
 
-        Epic epic2 = new Epic("title epic2", "epic2");
-        SubTask subtask3 = new SubTask("title sub3", "sub3", epic2);
-        epic2.addSubtask(subtask3);
+        taskManager.printAllEpics();
 
-        // Добавление задач
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-        taskManager.addTask(epic1);
-        taskManager.addTask(epic2);
+        subTask2.setStatus(Status.DONE);
+        subTask3.setStatus(Status.DONE);
+        subTask4.setStatus(Status.DONE);
+        taskManager.deleteSubTaskById(3);
 
-        // Печать списков
-        System.out.println("Tasks:");
-        taskManager.printTasks();
-        System.out.println("Epics:");
-        taskManager.printEpics();
-        System.out.println("Subtasks of Epic1:");
-        taskManager.printSubtasks(epic1);
+        taskManager.printAllEpics();
 
-        // Изменение статусов
-        task1.setStatus(Status.IN_PROGRESS);
-        subtask1.setStatus(Status.DONE);
 
-        // Обновление задач
-        taskManager.updateTask(task1);
-        taskManager.updateTask(subtask1);
-
-        // Печать после изменений
-        System.out.println("Tasks agter update:");
-        taskManager.printTasks();
-        System.out.println("Epics after update:");
-        taskManager.printEpics();
-
-        // Удаление задач
-        taskManager.deleteTask(task2.getId());
-        taskManager.deleteTask(epic2.getId());
-
-        // Печать после удаления
-        System.out.println("Tasks after delete:");
-        taskManager.printTasks();
-        System.out.println("Epics after delete:");
-        taskManager.printEpics();
     }
 }

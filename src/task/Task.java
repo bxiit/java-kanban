@@ -1,6 +1,6 @@
 package task;
 
-import manager.TaskManager;
+import java.util.Objects;
 
 public class Task {
 
@@ -9,26 +9,17 @@ public class Task {
     private String description;
     private Status status;
 
-    public Task(String name, String description, Status status) {
-        this.id = countId();
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = status;
-    }
-
-    public Task(String name, String description) {
-        this(name, description, Status.NEW);
-    }
-
-    public long countId() {
-        return TaskManager.manageId();
+        this.status = Status.NEW;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -57,7 +48,25 @@ public class Task {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
     public String toString() {
-        return String.format("Задача №%d: %s (%s)", id, name, status);
+        return "Task{" +
+                "ID=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

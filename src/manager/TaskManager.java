@@ -1,6 +1,7 @@
 package manager;
 
 import task.Epic;
+import task.Status;
 import task.SubTask;
 import task.Task;
 
@@ -11,10 +12,10 @@ import java.util.Map;
 
 public class TaskManager {
 
-    private static long manageId = 0L;
-    private Map<Long, Task> tasks;
-    private Map<Long, SubTask> subtasks;
-    private Map<Long, Epic> epics;
+    private long manageId = 0L;
+    private final Map<Long, Task> tasks;
+    private final Map<Long, SubTask> subtasks;
+    private final Map<Long, Epic> epics;
 
     public TaskManager() {
         tasks = new HashMap<>();
@@ -22,106 +23,167 @@ public class TaskManager {
         epics = new HashMap<>();
     }
 
-    public static long manageId() {
+    private long takeId() {
         return ++manageId;
     }
 
     public void addTask(Task task) {
+        task.setId(takeId());
         tasks.put(task.getId(), task);
     }
-
-    public Task getTask(long id) {
+    public void updateTask(Task task) {
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        }
+    }
+    public void printAllTasks() {
+        for (Map.Entry<Long, Task> longTaskEntry : tasks.entrySet()) {
+            System.out.println("ID " + longTaskEntry.getKey() + ", " + longTaskEntry.getValue());
+        }
+    }
+    public Task getTaskById(long id) {
+        if (!tasks.containsKey(id)) {
+            System.out.println("Task with id: " + id + " does not exist!");
+            return null;
+        }
         return tasks.get(id);
     }
-
+    public void deleteTaskById(long id) {
+        if (!tasks.containsKey(id)) {
+            System.out.println("Task with id: " + id + " does not exist!");
+        }
+        else  {
+            tasks.remove(id);
+        }
+    }
     public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values());
+        if (tasks.isEmpty()) {
+            System.out.println("Task list is empty");
+            return new ArrayList<>();
+        }
+        else {
+            return new ArrayList<>(tasks.values());
+        }
     }
 
-    public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
-    }
 
-    public void deleteTask(long id) {
-        tasks.remove(id);
-    }
-
-    // CRUD-операции для подзадач
-    public void addSubtask(SubTask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = subtask.getEpic();
-        epic.addSubtask(subtask);
-        epics.put(epic.getId(), epic);
-    }
-
-    public SubTask getSubtask(long id) {
-        return subtasks.get(id);
-    }
-
-    public List<SubTask> getAllSubtasks() {
-        return new ArrayList<>(subtasks.values());
-    }
-
-    public void updateSubtask(SubTask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = subtask.getEpic();
-        epic.calculateStatus();
-        epics.put(epic.getId(), epic);
-    }
-
-    public void deleteSubtask(long id) {
-        SubTask subtask = subtasks.remove(id);
-        Epic epic = subtask.getEpic();
-        epic.removeSubtask(subtask);
-        epic.calculateStatus();
-        epics.put(epic.getId(), epic);
-    }
-
-    // CRUD-операции для эпиков
+    // EPICS
     public void addEpic(Epic epic) {
+        epic.setId(takeId());
         epics.put(epic.getId(), epic);
     }
-
-    public Epic getEpic(long id) {
+    public void updateEpic(Epic epic) {
+        if (epics.containsKey(epic.getId())) {
+            Epic epicToUpdate = epics.get(epic.getId());
+            epicToUpdate.setName(epic.getName());
+            epicToUpdate.setDescription(epic.getDescription());
+            epics.put(epic.getId(), epicToUpdate);
+        }
+    }
+    public void printAllEpics() {
+        for (Map.Entry<Long, Epic> longEpicEntry : epics.entrySet()) {
+            System.out.println("ID " + longEpicEntry.getKey() + ", " + longEpicEntry.getValue());
+        }
+    }
+    public Epic getEpicById(long id) {
+        if (!epics.containsKey(id)) {
+            System.out.println("Epic with id: " + id + " does not exist");
+            return null;
+        }
         return epics.get(id);
     }
-
+    public void deleteEpicById(long id) {
+        if (!epics.containsKey(id)) {
+            System.out.println("Task with id: " + id + " does not exist!");
+        }
+        else  {
+            epics.remove(id);
+        }
+    }
     public List<Epic> getAllEpics() {
-        return new ArrayList<>(epics.values());
-    }
-
-    public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
-    }
-
-    public void deleteEpic(long id) {
-        Epic epic = epics.remove(id);
-        for (SubTask subtask : epic.getSubtasks()) {
-            subtasks.remove(subtask.getId());
+        if (epics.isEmpty()) {
+            System.out.println("Epics list is empty");
+            return new ArrayList<>();
+        }
+        else {
+            return new ArrayList<>(epics.values());
         }
     }
 
-    // Получение списка подзадач эпика
-    public List<SubTask> getEpicSubtasks(Epic epic) {
-        return epic.getSubtasks();
-    }
 
-    // Печать списков
-    public void printTasks() {
-        for (Task task : getAllTasks()) {
-            System.out.println(task);
+    // SUBTASKS
+    public void addSubTask(Epic epic, SubTask subTask) {
+        subTask.setId(takeId());
+        epic.addSubTaskId(subTask.getId());
+        subtasks.put(subTask.getId(), subTask);
+        checkSubTasksStatus();
+    }
+    public void printAllSubTasks() {
+        for (Map.Entry<Long, SubTask> longSubTaskEntry : subtasks.entrySet()) {
+            System.out.println(longSubTaskEntry.getValue());
+        }
+    }
+    public SubTask getSubTaskById(long id) {
+        if (!subtasks.containsKey(id)) {
+            System.out.println("SubTask with id: " + id + " does not exist");
+            return null;
+        }
+        return subtasks.get(id);
+    }
+    public void updateSubTask(SubTask subTask) {
+        if (subtasks.containsKey(subTask.getId())) {
+            subtasks.put(subTask.getId(), subTask);
+            checkSubTasksStatus();
+        }
+    }
+    public void deleteSubTaskById(long id) {
+        if (subtasks.containsKey(id)) {
+            subtasks.remove(id);
+            for (Epic epic : epics.values()) {
+                epic.deleteSubTaskId(id);
+                checkSubTasksStatus();
+            }
+        }
+        else  {
+            System.out.println("Task with id: " + id + " does not exist!");
+        }
+    }
+    public List<SubTask> getAllSubTasks() {
+        if (subtasks.isEmpty()) {
+            System.out.println("SubTask list is empty");
+            return new ArrayList<>();
+        }
+        else {
+            return new ArrayList<>(subtasks.values());
         }
     }
 
-    public void printEpics() {
-        for (Epic epic : getAllEpics()) {
-            System.out.println(epic);
-        }
-    }
+    // CHECKING SUBTASKS STATUS
+    private void checkSubTasksStatus() {
+        for (Epic epic : epics.values()) {
+            if (epic.getSubTasksId().isEmpty()) {
+                epic.setStatus(Status.NEW);
+                return;
+            }
 
-    public void printSubtasks(Epic epic) {
-        for (SubTask subtask : epic.getSubtasks()) {
-            System.out.println(subtask);
+            boolean allNew = true;
+            boolean allDone = true;
+            for (SubTask subtask : subtasks.values()) {
+                if (subtask.getStatus() != Status.NEW) {
+                    allNew = false;
+                }
+                if (subtask.getStatus() != Status.DONE) {
+                    allDone = false;
+                }
+            }
+
+            if (allNew) {
+                epic.setStatus(Status.NEW);
+            } else if (allDone) {
+                epic.setStatus(Status.DONE);
+            } else {
+                epic.setStatus(Status.IN_PROGRESS);
+            }
         }
     }
 }

@@ -1,28 +1,21 @@
 package task;
 public class SubTask extends Task {
-
-    private Epic epic;
-
-    public SubTask(String name, String description, Status status, Epic epic) {
-        super(name, description, status);
-        this.epic = epic;
-    }
+    private final long epicId;
 
     public SubTask(String name, String description, Epic epic) {
         super(name, description);
-        this.epic = epic;
+        this.epicId = epic.getId();
     }
 
-    public Epic getEpic() {
-        return epic;
-    }
-
-    public void setEpic(Epic epic) {
-        this.epic = epic;
+    public long getEpicId() {
+        return epicId;
     }
 
     @Override
     public String toString() {
-        return String.format("Подзадача №%d: %s (%s) - Эпик: %s", getId(), getName(), getStatus(), epic.getName());
+        return "SubTask{" +
+                "epicId=" + epicId +
+                ", " + super.toString() +
+                '}';
     }
 }
