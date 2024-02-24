@@ -1,5 +1,7 @@
 package task;
 
+import manager.TaskManager;
+
 import java.util.Objects;
 
 public class Task {
@@ -9,10 +11,11 @@ public class Task {
     private String description;
     private Status status;
 
-    public Task(String name, String description) {
+    public Task(String name, String description, Status status) {
+        this.id = TaskManager.takeId();
         this.name = name;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status;
     }
 
     public long getId() {

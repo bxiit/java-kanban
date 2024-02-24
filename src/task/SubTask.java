@@ -2,9 +2,9 @@ package task;
 public class SubTask extends Task {
     private final long epicId;
 
-    public SubTask(String name, String description, Epic epic) {
-        super(name, description);
-        this.epicId = epic.getId();
+    public SubTask(String name, String description, long epicId) {
+        super(name, description, Status.NEW);
+        this.epicId = epicId;
     }
 
     public long getEpicId() {

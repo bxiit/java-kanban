@@ -13,14 +13,21 @@ public class Main {
 
         // Создание задач
         Epic epic1 = new Epic("Epic1", "Epic1 desc");
-        SubTask subTask2 = new SubTask("SubTask1", "SubTask1 desc", epic1);
-        SubTask subTask3 = new SubTask("SubTask2", "SubTask2 desc", epic1);
-        SubTask subTask4 = new SubTask("SubTask3", "SubTask3 desc", epic1);
+        SubTask subTask2 = new SubTask("SubTask1", "SubTask1 desc", epic1.getId());
+        SubTask subTask3 = new SubTask("SubTask2", "SubTask2 desc", epic1.getId());
+        SubTask subTask4 = new SubTask("SubTask3", "SubTask3 desc", epic1.getId());
+
+        epic1.addSubTaskId(subTask2.getId());
+        epic1.addSubTaskId(subTask3.getId());
+        epic1.addSubTaskId(subTask4.getId());
+
         taskManager.addEpic(epic1);
 
-        taskManager.addSubTask(epic1, subTask2);
-        taskManager.addSubTask(epic1, subTask3);
-        taskManager.addSubTask(epic1, subTask4);
+        taskManager.addSubTask(subTask2);
+        taskManager.addSubTask(subTask3);
+        taskManager.addSubTask(subTask4);
+
+
 
         taskManager.printAllEpics();
 
