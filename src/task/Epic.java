@@ -6,8 +6,8 @@ import java.util.List;
 public class Epic extends Task {
     private List<Long> subTasksIds;
 
-    public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+    public Epic(long id, String name, String description, Status status) {
+        super(id, name, description, status);
         subTasksIds = new ArrayList<>();
     }
 
@@ -15,7 +15,7 @@ public class Epic extends Task {
         return new ArrayList<>(subTasksIds);
     }
 
-    public void addSubTaskId(long subTaskId) {
+    public void addSubTaskId(Long subTaskId) {
         subTasksIds.add(subTaskId);
     }
     public void deleteSubTaskId(long id) {

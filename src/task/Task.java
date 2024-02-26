@@ -1,24 +1,22 @@
 package task;
 
-import manager.TaskManager;
-
 import java.util.Objects;
 
 public class Task {
 
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private Status status;
 
-    public Task(String name, String description, Status status) {
-        this.id = TaskManager.takeId();
+    public Task(long id, String name, String description, Status status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
