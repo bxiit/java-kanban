@@ -61,7 +61,8 @@ public class Main {
         System.out.println("getting sub with id = 6");
         System.out.println("taskManager.getSubTaskById(6) = " + taskManager.getSubTaskById(6));
 
-        taskManager.updateEpicNew(2, "newname", "newdesc");
+        Epic epicUpdate = new Epic("newname", "newdesc");
+        taskManager.updateEpicNew(2, epicUpdate);
 
         System.out.println("taskManager.getEpicById(2) = " + taskManager.getEpicById(2));
     }

@@ -73,10 +73,10 @@ public class TaskManager {
         epics.put(epic.getId(), epic);
     }
 
-    public void updateEpicNew(long id, String name, String description) {
+    public void updateEpicNew(long id, Epic epic) {
         if (epics.containsKey(id)) {
-            epics.get(id).setName(name);
-            epics.get(id).setDescription(description);
+            epics.get(id).setName(epic.getName());
+            epics.get(id).setDescription(epic.getDescription());
         }
     }
 
@@ -198,5 +198,14 @@ public class TaskManager {
                 epicToCheck.setStatus(Status.IN_PROGRESS);
             }
         }
+    }
+
+    public List<SubTask> getSubTasksByEpicId(long epicId) {
+        ArrayList<SubTask> subTasks = new ArrayList<>();
+        for (SubTask subTask : subtasks.values()) {
+            if (subTask.getEpicId() == epicId)
+                subTasks.add(subTask);
+        }
+        return subTasks;
     }
 }
