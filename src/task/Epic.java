@@ -6,8 +6,8 @@ import java.util.List;
 public class Epic extends Task {
     private List<Long> subTasksIds;
 
-    public Epic(long id, String name, String description, Status status) {
-        super(id, name, description, status);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW);
         subTasksIds = new ArrayList<>();
     }
 
@@ -22,6 +22,10 @@ public class Epic extends Task {
         if (subTasksIds.contains(id)) {
             subTasksIds.remove(id);
         }
+    }
+
+    public void deleteAllSubTaskIds() {
+        subTasksIds.clear();
     }
 
     @Override
