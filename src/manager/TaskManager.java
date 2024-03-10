@@ -1,14 +1,13 @@
 package manager;
 
+import history.HistoryManager;
 import task.Epic;
-import task.Status;
 import task.SubTask;
 import task.Task;
 
 import java.util.List;
 
 public interface TaskManager {
-    long takeId();
 
     Long addTask(Task task);
 
@@ -25,7 +24,8 @@ public interface TaskManager {
     // EPICS
     Long addEpic(Epic epic);
 
-    void updateEpicNew(long id, Epic epic);
+//    void updateEpic(long id, Epic epic);
+    void updateEpic(Epic epic);
 
     void printAllEpics();
 
@@ -50,4 +50,7 @@ public interface TaskManager {
 
     List<SubTask> getSubTasksByEpicId(long epicId);
 
+    HistoryManager getHistoryManager();
+
+    List<Task> getHistory();
 }

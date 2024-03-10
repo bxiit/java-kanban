@@ -1,5 +1,6 @@
 package manager;
 
+import history.HistoryManager;
 import history.InMemoryHistoryManager;
 import task.Epic;
 import task.Status;
@@ -14,21 +15,26 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Long, Task> tasks;
     private final Map<Long, SubTask> subtasks;
     private final Map<Long, Epic> epics;
-    private final InMemoryHistoryManager inMemoryHistoryManager;
+    private final HistoryManager inMemoryHistoryManager;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
-        inMemoryHistoryManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
+        inMemoryHistoryManager = Managers.getDefaultHistory();
     }
 
-    public InMemoryHistoryManager getInMemoryHistoryManager() {
+    @Override
+    public HistoryManager getHistoryManager() {
         return inMemoryHistoryManager;
     }
 
     @Override
-    public long takeId() {
+    public List<Task> getHistory() {
+        return new ArrayList<>(inMemoryHistoryManager.getHistory());
+    }
+
+    private long takeId() {
         return ++manageId;
     }
 
@@ -59,9 +65,6 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Task with id: " + id + " does not exist!");
             return null;
         }
-        if (!inMemoryHistoryManager.isCapacityOkay(inMemoryHistoryManager.getHistory())) {
-            inMemoryHistoryManager.getHistory().removeFirst();
-        }
         inMemoryHistoryManager.add(tasks.get(id));
         return tasks.get(id);
     }
@@ -85,7 +88,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     // EPICS
     @Override
     public Long addEpic(Epic epic) {
@@ -95,10 +97,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpicNew(long id, Epic epic) {
-        if (epics.containsKey(id)) {
-            epics.get(id).setName(epic.getName());
-            epics.get(id).setDescription(epic.getDescription());
+    public void updateEpic(Epic epicUpdated) {
+        if (epics.containsKey(epicUpdated.getId())) {
+            Epic epicToUpdate = epics.get(epicUpdated.getId());
+            epicToUpdate.setName(epicUpdated.getName());
+            epicToUpdate.setDescription(epicToUpdate.getDescription());
+
+            epics.put(epicUpdated.getId(), epicUpdated);
         }
     }
 
@@ -115,9 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Epic with id: " + id + " does not exist");
             return null;
         }
-        if (!inMemoryHistoryManager.isCapacityOkay(inMemoryHistoryManager.getHistory())) {
-            inMemoryHistoryManager.getHistory().removeFirst();
-        }
+
         inMemoryHistoryManager.add(epics.get(id));
         return epics.get(id);
     }
@@ -145,8 +148,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     // SUBTASKS
+
     @Override
     public Long addSubTask(SubTask subTask) {
         long id = takeId();
@@ -175,9 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("SubTask with id: " + id + " does not exist");
             return null;
         }
-        if (!inMemoryHistoryManager.isCapacityOkay(inMemoryHistoryManager.getHistory())) {
-            inMemoryHistoryManager.getHistory().removeFirst();
-        }
+
         inMemoryHistoryManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
