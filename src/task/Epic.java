@@ -2,6 +2,7 @@ package task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private List<Long> subTasksIds;
@@ -15,8 +16,12 @@ public class Epic extends Task {
         return new ArrayList<>(subTasksIds);
     }
 
-    public void addSubTaskId(Long subTaskId) {
+    public Long addSubTaskId(long subTaskId) {
+        if (subTaskId == this.getId()) {
+            return (long) -1;
+        }
         subTasksIds.add(subTaskId);
+        return subTaskId;
     }
     public void deleteSubTaskId(long id) {
         if (subTasksIds.contains(id)) {
