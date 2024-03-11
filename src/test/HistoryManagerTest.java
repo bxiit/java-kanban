@@ -1,7 +1,7 @@
 package test;
 
 import history.HistoryManager;
-import manager.InMemoryTaskManager;
+import manager.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Status;
@@ -15,47 +15,36 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HistoryManagerTest {
     private static HistoryManager inMemoryHistoryManager;
-    private static InMemoryTaskManager inMemoryTaskManager;
 
     @BeforeEach
     public void initEach() {
-        inMemoryTaskManager = new InMemoryTaskManager();
-        inMemoryHistoryManager = inMemoryTaskManager.getHistoryManager();
+        inMemoryHistoryManager = Managers.getDefaultHistory();
 
         // simple 10 tasks
         for (int i = 1; i <= 10; i++) {
-            inMemoryTaskManager.addTask(new Task("task" + i, "task" + i + " Desc", Status.NEW));
+            inMemoryHistoryManager.add(new Task("task" + i, "task" + i + " Desc", Status.NEW));
         }
     }
 
     @Test
     public void shouldNotReturnNullOfInMemoryHistoryManager() {
-        assertNotNull(inMemoryHistoryManager);
+        assertNotNull(inMemoryHistoryManager.getHistory());
     }
 
     @Test
     public void addHistory() {
-        inMemoryTaskManager.getTaskById(1);
-        inMemoryTaskManager.getTaskById(2);
-        inMemoryTaskManager.getTaskById(3);
-        inMemoryTaskManager.getTaskById(4);
-        inMemoryTaskManager.getTaskById(5);
 
         List<Task> history = inMemoryHistoryManager.getHistory();
 
-        assertEquals(5, history.size(), "History storage works incorrect");
+        assertEquals(10, history.size(), "History storage works incorrect");
     }
 
     @Test
     public void removingHistoryElements() {
-        Task firstTaskInHistory = inMemoryTaskManager.getTaskById(1);
+        Task firstTaskInHistory = inMemoryHistoryManager.getHistory().getFirst();
 
-        for (int i = 2; i <= 10; i++) {
-            inMemoryTaskManager.getTaskById(i);
-        }
-
-        inMemoryTaskManager.addTask(new Task("asd11", "dsa11", Status.NEW));
-        Task lastTaskInHistory = inMemoryTaskManager.getTaskById(11);
+        inMemoryHistoryManager.add(new Task("asd11", "dsa11", Status.NEW));
+        Task lastTaskInHistory = inMemoryHistoryManager.getHistory().getLast();
 
         List<Task> historyList = inMemoryHistoryManager.getHistory();
 

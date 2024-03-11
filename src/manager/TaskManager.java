@@ -1,6 +1,5 @@
 package manager;
 
-import history.HistoryManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
@@ -49,8 +48,6 @@ public interface TaskManager {
     List<SubTask> getAllSubTasks();
 
     List<SubTask> getSubTasksByEpicId(long epicId);
-
-    HistoryManager getHistoryManager();
 
     List<Task> getHistory();
 }

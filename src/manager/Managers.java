@@ -8,7 +8,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static TaskManager taskManager() {
+    public static TaskManager getTaskManager() {
         return new InMemoryTaskManager();
     }
 }

@@ -1,13 +1,15 @@
 package manager;
 
 import history.HistoryManager;
-import history.InMemoryHistoryManager;
 import task.Epic;
 import task.Status;
 import task.SubTask;
 import task.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -24,14 +26,13 @@ public class InMemoryTaskManager implements TaskManager {
         inMemoryHistoryManager = Managers.getDefaultHistory();
     }
 
-    @Override
-    public HistoryManager getHistoryManager() {
-        return inMemoryHistoryManager;
+    private void addHistory(Task task) {
+        inMemoryHistoryManager.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(inMemoryHistoryManager.getHistory());
+        return inMemoryHistoryManager.getHistory();
     }
 
     private long takeId() {
@@ -65,7 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Task with id: " + id + " does not exist!");
             return null;
         }
-        inMemoryHistoryManager.add(tasks.get(id));
+        addHistory(tasks.get(id));
         return tasks.get(id);
     }
 
@@ -121,7 +122,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
-        inMemoryHistoryManager.add(epics.get(id));
+        addHistory(epics.get(id));
         return epics.get(id);
     }
 
@@ -179,7 +180,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
-        inMemoryHistoryManager.add(subtasks.get(id));
+        addHistory(subtasks.get(id));
         return subtasks.get(id);
     }
 

@@ -1,6 +1,7 @@
 package test;
 
-import manager.InMemoryTaskManager;
+import manager.Managers;
+import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
@@ -16,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TaskManagerTest {
-    private static InMemoryTaskManager inMemoryTaskManager;
+    private static TaskManager inMemoryTaskManager;
 
     @BeforeEach
     public void initEach() {
-        inMemoryTaskManager = new InMemoryTaskManager();
+        inMemoryTaskManager = Managers.getTaskManager();
 
         // simple 10 tasks
         for (int i = 1; i <= 10; i++) {
