@@ -75,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(id)) {
             System.out.println("Task with id: " + id + " does not exist!");
         } else {
+            inMemoryHistoryManager.remove(id);
             tasks.remove(id);
         }
     }
@@ -132,9 +133,11 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Task with id: " + id + " does not exist!");
             return;
         }
+        inMemoryHistoryManager.remove(id);
         Epic removedEpic = epics.remove(id);
 
         for (Long subTaskId : removedEpic.getSubTasksIds()) {
+            inMemoryHistoryManager.remove(subTaskId);
             subtasks.remove(subTaskId);
         }
     }
@@ -198,6 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask == null) {
             System.out.println("Task with id: " + id + " does not exist!");
         } else {
+            inMemoryHistoryManager.remove(id);
             Epic epic = epics.get(subTask.getEpicId());
             epic.deleteSubTaskId(id);
             checkSubTasksStatus(subTask.getEpicId());
