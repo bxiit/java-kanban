@@ -31,7 +31,7 @@ public class HistoryManagerTest {
 
     @Test
     public void addHistory() {
-        assertEquals(10, inMemoryHistoryManager.getSize(), "History storage works incorrect");
+        assertEquals(10, inMemoryHistoryManager.getHistory().size(), "History storage works incorrect");
     }
 
     @Test
