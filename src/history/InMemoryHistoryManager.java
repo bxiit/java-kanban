@@ -1,19 +1,17 @@
 package history;
 
+import task.Epic;
 import task.Task;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Long,Node> historyMap;
+    private final Map<Long, Node> historyMap;
     private Node first;
     private Node last;
 
     public InMemoryHistoryManager() {
-        this.historyMap = new LinkedHashMap<>();
+        this.historyMap = new HashMap<>();
     }
 
     @Override
@@ -28,47 +26,73 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(long id) {
+        Node node = historyMap.get(id);
+
+        if (node.task instanceof Epic epic) {
+            for (Long subTasksId : epic.getSubTasksIds()) {
+                Node subTaskNode = historyMap.remove(subTasksId);
+                removeNode(subTaskNode);
+            }
+        }
         historyMap.remove(id);
+        removeNode(node);
     }
 
     private void removeNode(Node node) {
-        historyMap.remove(node.data.getId());
+        if (node.prev == null) {
+            linkAfter(node);
+        } else if (node.next == null) {
+            linkBefore(node);
+        } else {
+            linkBetween(node.prev, node.next);
+        }
+        historyMap.remove(node.task.getId());
     }
 
-    public List<Task> getTasks() {
-        ArrayList<Task> tasks = new ArrayList<>(historyMap.size());
+    private List<Task> getTasks() {
+        List<Task> tasks = new ArrayList<>(historyMap.size());
 
         for (Node node : historyMap.values()) {
-            tasks.add(node.data);
+            tasks.add(node.task);
         }
 
         return tasks;
     }
 
     private void linkLast(Task task) {
-        Node l = last;
-        Node newNode = new Node(l, task, null);
-        last = newNode;
-
-        if (l == null)
-            first = newNode;
-        else
-            l.next = newNode;
-
-        removeNode(newNode);
-
-        // todo: не нравиться это добавление
-        historyMap.put(task.getId(), newNode);
+        Node node;
+        if (last == null) {
+            node = new Node(null, task, null);
+            first = node;
+        } else {
+            node = new Node(last, task, null);
+            last.next = node;
+        }
+        last = node;
+        historyMap.put(task.getId(), node);
     }
 
+    private void linkBefore(Node node) {
+        Node preLastNode = node.prev;
+        preLastNode.next = null;
+    }
+
+    private void linkAfter(Node node) {
+        Node secondNode = node.next;
+        secondNode.prev = null;
+    }
+
+    private void linkBetween(Node prevNode, Node nextNode) {
+        prevNode.next = nextNode.prev;
+    }
 
     private static class Node {
-        Task data;
+        Task task;
         Node prev;
         Node next;
 
-        private Node(Node prev, Task data, Node next) {
-            this.data = data;
+        private Node(Node prev, Task task, Node next) {
+            this.task = task;
             this.prev = prev;
             this.next = next;
         }
