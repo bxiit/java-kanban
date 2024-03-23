@@ -39,13 +39,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void removeNode(Node node) {
-        if (node.prev == null) {
-            linkAfter(node);
-        } else if (node.next == null) {
-            linkBefore(node);
-        } else {
-            linkBetween(node.prev, node.next);
-        }
+        if (node == first) linkAfter(node);
+        else if (node == last) linkBefore(node);
+        else if (first == last) {
+            first = null;
+            last = null;
+        } else linkBetween(node.prev, node.next);
+
         historyMap.remove(node.task.getId());
     }
 
@@ -60,12 +60,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkLast(Task task) {
-        Node node;
-        if (last == null) {
-            node = new Node(null, task, null);
+        Node node = new Node(last, task, null);
+
+        if (first == null) {
             first = node;
         } else {
-            node = new Node(last, task, null);
             last.next = node;
         }
         last = node;
@@ -75,11 +74,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void linkBefore(Node node) {
         Node preLastNode = node.prev;
         preLastNode.next = null;
+        last = preLastNode;
     }
 
     private void linkAfter(Node node) {
         Node secondNode = node.next;
         secondNode.prev = null;
+        first = secondNode;
     }
 
     private void linkBetween(Node prevNode, Node nextNode) {

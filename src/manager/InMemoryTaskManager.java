@@ -90,6 +90,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    public void deleteAllTasks() {
+        tasks.clear();
+    }
+
     // EPICS
     @Override
     public Long addEpic(Epic epic) {
@@ -149,6 +153,10 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             return new ArrayList<>(epics.values());
         }
+    }
+
+    public void deleteAllEpics() {
+        epics.clear();
     }
 
     // SUBTASKS
@@ -225,6 +233,10 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasks.add(subTask);
         }
         return subTasks;
+    }
+
+    public void deleteAllSubTasks() {
+        subtasks.clear();
     }
 
     // CHECKING SUBTASKS STATUS
