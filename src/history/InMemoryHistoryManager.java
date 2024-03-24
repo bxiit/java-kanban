@@ -1,9 +1,11 @@
 package history;
 
-import task.Epic;
 import task.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Long, Node> historyMap;
@@ -16,6 +18,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
+        if (historyMap.containsKey(task.getId())) {
+            removeNode(historyMap.get(task.getId()));
+        }
         linkLast(task);
     }
 
@@ -26,25 +31,16 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(long id) {
-        Node node = historyMap.get(id);
-
-        if (node.task instanceof Epic epic) {
-            for (Long subTasksId : epic.getSubTasksIds()) {
-                Node subTaskNode = historyMap.remove(subTasksId);
-                removeNode(subTaskNode);
-            }
-        }
-        historyMap.remove(id);
+        Node node = historyMap.remove(id);
+        if (node == null) return;
         removeNode(node);
     }
 
     private void removeNode(Node node) {
-        if (node == first) linkAfter(node);
-        else if (node == last) linkBefore(node);
-        else if (first == last) {
-            first = null;
-            last = null;
-        } else linkBetween(node.prev, node.next);
+        if (node.prev == null && node.next == null) linkNulls();
+        else if (node.prev == null) linkAfter(node);
+        else if (node.next == null) linkBefore(node);
+        else linkBetween(node.prev, node.next);
 
         historyMap.remove(node.task.getId());
     }
@@ -52,21 +48,24 @@ public class InMemoryHistoryManager implements HistoryManager {
     private List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>(historyMap.size());
 
-        for (Node node : historyMap.values()) {
-            tasks.add(node.task);
+        Node firstNode = first;
+        while (firstNode != null) {
+            tasks.add(firstNode.task);
+            firstNode = firstNode.next;
         }
 
         return tasks;
     }
 
+    private void linkNulls() {
+        first = null;
+        last = null;
+    }
+
     private void linkLast(Task task) {
         Node node = new Node(last, task, null);
-
-        if (first == null) {
-            first = node;
-        } else {
-            last.next = node;
-        }
+        if (first == null) first = node;
+        else last.next = node;
         last = node;
         historyMap.put(task.getId(), node);
     }
@@ -84,7 +83,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkBetween(Node prevNode, Node nextNode) {
-        prevNode.next = nextNode.prev;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
     }
 
     private static class Node {

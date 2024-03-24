@@ -1,14 +1,16 @@
 package task;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Epic extends Task {
-    private List<Long> subTasksIds;
+    private final Set<Long> subTasksIds;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
-        subTasksIds = new ArrayList<>();
+        subTasksIds = new HashSet<>();
     }
 
     public List<Long> getSubTasksIds() {
