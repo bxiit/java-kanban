@@ -138,10 +138,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpicById(long id) {
-        if (!epics.containsKey(id)) {
-            System.out.println("Task with id: " + id + " does not exist!");
-            return;
-        }
         inMemoryHistoryManager.remove(id);
         Epic removedEpic = epics.remove(id);
 
@@ -250,14 +246,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubTasks() {
-        Epic epic = null;
         for (SubTask subTask : subtasks.values()) {
             inMemoryHistoryManager.remove(subTask.getId());
-            epic = epics.get(subTask.getEpicId());
-            epic.deleteSubTaskId(subTask.getId());
-        }
-        if (epic != null) {
-            checkSubTasksStatus(epic.getId());
+            Epic epic = epics.get(subTask.getEpicId());
+            if (epic != null) {
+                checkSubTasksStatus(epic.getId());
+                epic.deleteSubTaskId(subTask.getId());
+            }
         }
         subtasks.clear();
     }
