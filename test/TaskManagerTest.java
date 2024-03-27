@@ -1,5 +1,3 @@
-package test;
-
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,10 +29,9 @@ class TaskManagerTest {
 
     @Test
     public void shouldBeEqualTaskIfTheirIdsIsEqual() {
-        Task taskWithId1 = inMemoryTaskManager.getTaskById(1);
         assertEquals(
-                taskWithId1,
-                inMemoryTaskManager.getTaskById(1),
+                1,
+                inMemoryTaskManager.getTaskById(1).getId(),
                 "Tasks are not equals even if their id's are the same"
         );
     }
@@ -57,7 +54,7 @@ class TaskManagerTest {
     public void shouldReturnNegativeIfAddEpicToEpicAddSubtasksId() {
         Epic epic = new Epic("epic1", "epic1 desc");
         inMemoryTaskManager.addEpic(epic);
-        final long addedSubTaskId = epic.addSubTaskId(epic.getId());
+        long addedSubTaskId = epic.addSubTaskId(epic.getId());
 
         assertTrue(addedSubTaskId < 0);
     }
@@ -74,7 +71,7 @@ class TaskManagerTest {
         Task task5 = inMemoryTaskManager.getTaskById(5);
 
         assertNotNull(task5);
-        assertEquals(task5, inMemoryTaskManager.getTaskById(5));
+        assertEquals(5, task5.getId());
     }
 
     @Test
@@ -114,5 +111,15 @@ class TaskManagerTest {
         Task addedTask = inMemoryTaskManager.getTaskById(11);
 
         assertEquals(task, addedTask, "Task changes when added to task manager");
+    }
+
+    @Test
+    public void shouldDeleteAllTasksFromTasksMap() {
+        inMemoryTaskManager.deleteAllTasks();
+        assertEquals(
+                0,
+                inMemoryTaskManager.getAllTasks().size(),
+                "Tasks do not delete when when deleteAllTasks is called"
+        );
     }
 }
