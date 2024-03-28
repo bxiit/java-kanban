@@ -87,11 +87,11 @@ class TaskManagerTest {
 
     @Test
     void addNewTask() {
-        final long taskId = inMemoryTaskManager.addTask(
-                new Task("addtest",
-                        "addtest description",
-                        Status.NEW)
-        );
+        Task task = new Task("addtest",
+                "addtest description",
+                Status.NEW);
+        inMemoryTaskManager.addTask(task);
+        final long taskId = inMemoryTaskManager.getTaskById(11).getId();
         final Task savedTask = inMemoryTaskManager.getTaskById(taskId);
 
         assertNotNull(savedTask);

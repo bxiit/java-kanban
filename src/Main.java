@@ -1,3 +1,4 @@
+import manager.FileBackedTaskManager;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import task.Epic;
@@ -5,6 +6,7 @@ import task.Status;
 import task.SubTask;
 import task.Task;
 
+import java.io.File;
 import java.util.List;
 
 public class Main {
@@ -53,5 +55,11 @@ public class Main {
         for (Task task : historyAfterDeletingAnEpic) {
             System.out.println(task);
         }
+
+
+
+        File file = new File("test.txt");
+        TaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
+
     }
 }
