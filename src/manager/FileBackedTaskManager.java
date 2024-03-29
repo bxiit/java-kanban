@@ -19,7 +19,6 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String HEADER = "id,type,name,status,description,epic";
-    private Long maxId = 1L;
     private final File file;
 
     public FileBackedTaskManager(File file) {
@@ -125,7 +124,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void save() {
+    private void save() {
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             StringBuilder builder = new StringBuilder();
             builder.append(HEADER + "\n");
@@ -172,17 +171,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
                 Task task = manager.fromString(line);
                 if (task instanceof SubTask subTask) {
-                    manager.addSubTask(subTask);
+                    manager.subtasks.put(subTask.getId(), subTask);
                 } else if (task instanceof Epic epic) {
-                    manager.addEpic(epic);
+                    manager.epics.put(epic.getId(), epic);
                 } else {
-                    manager.addTask(task);
+                    manager.tasks.put(task.getId(), task);
                 }
             }
 
             String historyIds = lines.getLast();
             if (historyIds.isEmpty()) return manager;
-            FileBackedTaskManager.historyFromString(historyIds);
             for (Long historyId : FileBackedTaskManager.historyFromString(historyIds)) {
                 manager.getTaskById(historyId);
                 manager.getEpicById(historyId);
@@ -195,12 +193,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public String toString(Task task) throws ManagerSaveException {
-        //id,type,name,status,description,epic
+    private String toString(Task task) throws ManagerSaveException {
         try {
-            TaskType taskType = task instanceof Epic ? TaskType.EPIC : (
-                    task instanceof SubTask ? TaskType.SUBTASK : TaskType.TASK
-            );
+            TaskType taskType = task.getType();
 
             String epicId = taskType == TaskType.SUBTASK ? String.valueOf(((SubTask) task).getEpicId()) : "";
 
@@ -212,7 +207,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public Task fromString(String value) {
+    private Task fromString(String value) {
         String[] parts = value.split(",");
         long id = Long.parseLong(parts[0]);
         checkTheMaxId(id);
@@ -222,29 +217,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String description = parts[4];
 
         if (type == TaskType.TASK) {
-            Task task = new Task(name, description, status);
-            task.setId(id);
-            return task;
+            return new Task(id, name, description, status);
         } else if (type == TaskType.EPIC) {
-            Epic epic = new Epic(name, description);
-            epic.setId(id);
-            epic.setStatus(status);
-            return epic;
+            return new Epic(id, name, description, status);
         } else {
             long epicId = Long.parseLong(parts[5]);
-            SubTask subTask = new SubTask(name, description, epicId, status);
-            subTask.setId(id);
-            return subTask;
+            return new SubTask(id, name, description, epicId, status);
         }
     }
 
-    public static String historyToString(HistoryManager manager) throws ManagerSaveException {
+    private static String historyToString(HistoryManager manager) throws ManagerSaveException {
         try {
             List<Task> history = manager.getHistory();
             if (history.isEmpty()) {
                 return "";
             }
-            String commaWithSpace = ", ";
+            String commaWithSpace = ",";
             StringBuilder builder = new StringBuilder(history.size() + (history.size() - 1) * 2);
 
             for (int i = 0; i < history.size(); i++) {
@@ -260,13 +248,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void checkTheMaxId(Long currentId) {
-        if (currentId > manageId) {
-            manageId = ++currentId;
-        }
+        if (currentId > manageId) manageId = currentId;
     }
 
-    public static List<Long> historyFromString(String history) {
-        String[] ids = history.split(", ");
+    private static List<Long> historyFromString(String history) {
+        String[] ids = history.split(",");
         List<Long> idsList = new ArrayList<>(ids.length);
         for (String id : ids) {
             idsList.add(Long.parseLong(id));

@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Long addTask(Task task) {
-        if (task.getId() == null) task.setId(takeId());
+        task.setId(takeId());
         tasks.put(task.getId(), task);
         return task.getId();
     }
@@ -92,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     // EPICS
     @Override
     public Long addEpic(Epic epic) {
-        if (epic.getId() == null) epic.setId(takeId());
+        epic.setId(takeId());
         epics.put(epic.getId(), epic);
         return epic.getId();
     }
@@ -156,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Long addSubTask(SubTask subTask) {
-        if (subTask.getId() == null) subTask.setId(takeId());
+        subTask.setId(takeId());
         if (subTask.getEpicId() == subTask.getId()) return (long) -1;
 
         subtasks.put(subTask.getId(), subTask);

@@ -61,7 +61,7 @@ class FileBackedTaskManagerTest {
         Files.writeString(file.toPath(), "2,EPIC,epic,NEW,epic desc,\n", StandardOpenOption.APPEND);
         Files.writeString(file.toPath(), "3,SUBTASK,subtask,NEW,subtask desc,2,\n", StandardOpenOption.APPEND);
         Files.writeString(file.toPath(), "\n", StandardOpenOption.APPEND);
-        Files.writeString(file.toPath(), "1, 2, 3", StandardOpenOption.APPEND);
+        Files.writeString(file.toPath(), "1,2,3", StandardOpenOption.APPEND);
 
         manager = FileBackedTaskManager.loadFromFile(file);
 
@@ -94,11 +94,11 @@ class FileBackedTaskManagerTest {
 
         List<String> lines = Files.readAllLines(file.toPath());
 
-        assertEquals(task, manager.fromString(lines.get(Math.toIntExact(task.getId()))));
-        assertEquals(epic, manager.fromString(lines.get(Math.toIntExact(epic.getId()))));
-        assertEquals(subTask, manager.fromString(lines.get(Math.toIntExact(subTask.getId()))));
+        assertEquals("1,TASK,task,NEW,task desc,", lines.get(Math.toIntExact(task.getId())));
+        assertEquals("2,EPIC,epic,NEW,epic desc,", lines.get(Math.toIntExact(epic.getId())));
+        assertEquals("3,SUBTASK,subtask,NEW,subtask desc,2", lines.get(Math.toIntExact(subTask.getId())));
 
-        assertEquals(List.of(task.getId(), epic.getId()), FileBackedTaskManager.historyFromString(lines.getLast()));
+        assertEquals("1,2", lines.getLast());
     }
 
     @AfterEach

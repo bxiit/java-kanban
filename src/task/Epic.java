@@ -13,8 +13,18 @@ public class Epic extends Task {
         subTasksIds = new HashSet<>();
     }
 
+    public Epic(Long id, String name, String description, Status status) {
+        super(id, name, description, status);
+        this.subTasksIds = new HashSet<>();
+    }
+
     public List<Long> getSubTasksIds() {
         return new ArrayList<>(subTasksIds);
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     public Long addSubTaskId(long subTaskId) {
