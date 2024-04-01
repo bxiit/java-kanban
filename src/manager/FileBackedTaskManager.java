@@ -2,25 +2,20 @@ package manager;
 
 import exception.ManagerSaveException;
 import history.HistoryManager;
-import task.Epic;
-import task.Status;
-import task.SubTask;
-import task.Task;
-import task.TaskType;
+import task.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String HOME_PATH = System.getProperty("user.home");
     private static final String HEADER = "id,type,name,status,description,epic";
     private final File file;
 
@@ -29,9 +24,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public FileBackedTaskManager() {
-        Path path = new File(HOME_PATH + "\\Desktop\\FileManager\\" + UUID.randomUUID() + ".txt").toPath();
+        file = new File("src", "resources\\" + UUID.randomUUID() + ".txt");
         try {
-            this.file = Files.createFile(path).toFile();
+            file.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

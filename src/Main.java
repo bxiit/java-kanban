@@ -60,6 +60,5 @@ public class Main {
 
         File file = new File("test.txt");
         TaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
-
     }
 }

@@ -39,6 +39,7 @@ class FileBackedTaskManagerTest {
         assertTrue(exception.getMessage().contains("Файл пуст"));
     }
 
+    @Test
     public void shouldReturnTrueIfFileIsEmpty() throws IOException {
         FileBackedTaskManager emptyManager = new FileBackedTaskManager(file);
         List<String> lines = Files.readAllLines(file.toPath());
