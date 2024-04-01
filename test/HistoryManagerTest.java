@@ -77,7 +77,7 @@ public class HistoryManagerTest {
 
     @Test
     public void shouldDeleteSubTaskWhenItsEpicIsDeleted() {
-        TaskManager taskManager = Managers.getTaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic11", "epic11 desc");
         taskManager.addEpic(epic);
 
@@ -111,7 +111,7 @@ public class HistoryManagerTest {
 
     @Test
     public void shouldDeleteAllTasksFromHistoryWhenAllTasksAreDeleted() {
-        TaskManager taskManager = Managers.getTaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Task task =  new Task("task to delete 1", "task to delete 1 desc", Status.NEW);
         task.setId(1);
         taskManager.addTask(task);
@@ -126,7 +126,7 @@ public class HistoryManagerTest {
 
     @Test
     public void shouldDeleteAllEpicsAndTheirSubTasksFromHistoryWhenAllEpicsWereDeleted() {
-        TaskManager taskManager = Managers.getTaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic to delete 1", "epic to delete 1 desc");
         taskManager.addEpic(epic);
         SubTask subTask = new SubTask(
@@ -147,7 +147,7 @@ public class HistoryManagerTest {
 
     @Test
     public void shouldDeleteAllSubTasksFromHistoryWhenAllSubTasksWereDeleted() {
-        TaskManager taskManager = Managers.getTaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic to delete 1", "epic to delete 1 desc");
         taskManager.addEpic(epic);
         SubTask subTask = new SubTask(

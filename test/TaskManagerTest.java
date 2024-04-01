@@ -19,7 +19,7 @@ class TaskManagerTest {
 
     @BeforeEach
     public void initEach() {
-        inMemoryTaskManager = Managers.getTaskManager();
+        inMemoryTaskManager = Managers.getDefaultManager();
 
         // simple 10 tasks
         for (int i = 1; i <= 10; i++) {

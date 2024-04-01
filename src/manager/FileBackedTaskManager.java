@@ -14,15 +14,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static final String HOME_PATH = System.getProperty("user.home");
     private static final String HEADER = "id,type,name,status,description,epic";
     private final File file;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
+    }
+
+    public FileBackedTaskManager() {
+        Path path = new File(HOME_PATH + "\\Desktop\\FileManager\\" + UUID.randomUUID() + ".txt").toPath();
+        try {
+            this.file = Files.createFile(path).toFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -172,6 +184,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = manager.fromString(line);
                 if (task instanceof SubTask subTask) {
                     manager.subtasks.put(subTask.getId(), subTask);
+                    manager.getEpicById(subTask.getEpicId()).addSubTaskId(subTask.getId());
                 } else if (task instanceof Epic epic) {
                     manager.epics.put(epic.getId(), epic);
                 } else {
