@@ -19,7 +19,7 @@ class TaskManagerTest {
 
     @BeforeEach
     public void initEach() {
-        inMemoryTaskManager = Managers.getTaskManager();
+        inMemoryTaskManager = Managers.getDefaultManager();
 
         // simple 10 tasks
         for (int i = 1; i <= 10; i++) {
@@ -87,11 +87,11 @@ class TaskManagerTest {
 
     @Test
     void addNewTask() {
-        final long taskId = inMemoryTaskManager.addTask(
-                new Task("addtest",
-                        "addtest description",
-                        Status.NEW)
-        );
+        Task task = new Task("addtest",
+                "addtest description",
+                Status.NEW);
+        inMemoryTaskManager.addTask(task);
+        final long taskId = inMemoryTaskManager.getTaskById(11).getId();
         final Task savedTask = inMemoryTaskManager.getTaskById(taskId);
 
         assertNotNull(savedTask);

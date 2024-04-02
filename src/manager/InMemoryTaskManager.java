@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private long manageId = 0L;
-    private final Map<Long, Task> tasks;
-    private final Map<Long, SubTask> subtasks;
-    private final Map<Long, Epic> epics;
-    private final HistoryManager inMemoryHistoryManager;
+    protected long manageId = 0L;
+    protected final Map<Long, Task> tasks;
+    protected final Map<Long, SubTask> subtasks;
+    protected final Map<Long, Epic> epics;
+    protected final HistoryManager inMemoryHistoryManager;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
@@ -48,24 +48,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (tasks.containsKey(task.getId())) {
-            tasks.put(task.getId(), task);
-        }
+        if (tasks.containsKey(task.getId())) tasks.put(task.getId(), task);
     }
 
     @Override
     public void printAllTasks() {
-        for (Map.Entry<Long, Task> longTaskEntry : tasks.entrySet()) {
-            System.out.println("ID " + longTaskEntry.getKey() + ", " + longTaskEntry.getValue());
-        }
+        for (Map.Entry<Long, Task> longTaskEntry : tasks.entrySet()) System.out.println(longTaskEntry.getValue());
     }
 
     @Override
     public Task getTaskById(long id) {
-        if (!tasks.containsKey(id)) {
-            System.out.println("Task with id: " + id + " does not exist!");
-            return null;
-        }
+        if (!tasks.containsKey(id)) return null;
         addHistory(tasks.get(id));
         return tasks.get(id);
     }
@@ -73,7 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(long id) {
         if (!tasks.containsKey(id)) {
-            System.out.println("Task with id: " + id + " does not exist!");
+            return;
         } else {
             inMemoryHistoryManager.remove(id);
             tasks.remove(id);
@@ -92,10 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        for (Task task : tasks.values()) {
-            inMemoryHistoryManager.remove(task.getId());
-        }
-
+        for (Task task : tasks.values()) inMemoryHistoryManager.remove(task.getId());
         tasks.clear();
     }
 
@@ -120,18 +110,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printAllEpics() {
-        for (Map.Entry<Long, Epic> longEpicEntry : epics.entrySet()) {
-            System.out.println("ID " + longEpicEntry.getKey() + ", " + longEpicEntry.getValue());
-        }
+        for (Map.Entry<Long, Epic> longEpicEntry : epics.entrySet()) System.out.println(longEpicEntry.getValue());
     }
 
     @Override
     public Epic getEpicById(long id) {
-        if (!epics.containsKey(id)) {
-            System.out.println("Epic with id: " + id + " does not exist");
-            return null;
-        }
-
+        if (!epics.containsKey(id)) return null;
         addHistory(epics.get(id));
         return epics.get(id);
     }
@@ -172,11 +156,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Long addSubTask(SubTask subTask) {
-        long id = takeId();
-        subTask.setId(id);
-        if (subTask.getEpicId() == id) {
-            return (long) -1;
-        }
+        subTask.setId(takeId());
+        if (subTask.getEpicId() == subTask.getId()) return (long) -1;
 
         subtasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).addSubTaskId(subTask.getId());
@@ -187,18 +168,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printAllSubTasks() {
-        for (Map.Entry<Long, SubTask> longSubTaskEntry : subtasks.entrySet()) {
+        for (Map.Entry<Long, SubTask> longSubTaskEntry : subtasks.entrySet())
             System.out.println(longSubTaskEntry.getValue());
-        }
     }
 
     @Override
     public SubTask getSubTaskById(long id) {
-        if (!subtasks.containsKey(id)) {
-            System.out.println("SubTask with id: " + id + " does not exist");
-            return null;
-        }
-
+        if (!subtasks.containsKey(id)) return null;
         addHistory(subtasks.get(id));
         return subtasks.get(id);
     }
@@ -215,7 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubTaskById(long id) {
         SubTask subTask = subtasks.remove(id);
         if (subTask == null) {
-            System.out.println("Task with id: " + id + " does not exist!");
+            return;
         } else {
             inMemoryHistoryManager.remove(id);
             Epic epic = epics.get(subTask.getEpicId());
