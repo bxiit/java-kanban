@@ -8,8 +8,10 @@ import task.Task;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Main {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         // Менеджер задач
@@ -41,22 +43,19 @@ public class Main {
 
         List<Task> history = taskManager.getHistory();
 
-        System.out.println("PRINTING HISTORY");
+        logger.info("PRINTING HISTORY");
         for (Task task : history) {
-            System.out.println(task);
+            logger.info(task.toString());
         }
 
         taskManager.deleteEpicById(1);
-//        taskManager.deleteSubTaskById(3);
 
         List<Task> historyAfterDeletingAnEpic = taskManager.getHistory();
 
-        System.out.println("PRINTING HISTORY");
+        logger.info("PRINTING HISTORY");
         for (Task task : historyAfterDeletingAnEpic) {
-            System.out.println(task);
+            logger.info(task.toString());
         }
-
-
 
         File file = new File("test.txt");
         TaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);

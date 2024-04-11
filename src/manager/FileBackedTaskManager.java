@@ -4,12 +4,7 @@ import exception.ManagerSaveException;
 import history.HistoryManager;
 import task.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +21,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager() {
         file = new File("src", "resources\\" + UUID.randomUUID() + ".txt");
         try {
-            file.createNewFile();
+            boolean createdNewFile = file.createNewFile();
+            if (!createdNewFile) {
+                throw new RuntimeException("Файл не создан " + file.getAbsolutePath());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -159,10 +157,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         try {
-            if (!Files.exists(file.toPath())) {
-                if (!file.createNewFile()) {
-                    System.out.println("Нельзя создать файл " + file.getName());
-                }
+            if (!Files.exists(file.toPath()) && !file.createNewFile()) {
+                System.out.println("Нельзя создать файл " + file.getName());
             }
             FileBackedTaskManager manager = new FileBackedTaskManager(file);
 

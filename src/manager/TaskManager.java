@@ -25,7 +25,6 @@ public interface TaskManager {
     // EPICS
     Long addEpic(Epic epic);
 
-    //    void updateEpic(long id, Epic epic);
     void updateEpic(Epic epic);
 
     void printAllEpics();

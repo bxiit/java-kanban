@@ -31,7 +31,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void shouldReturnTrueWhenFileToLoadFromIsEmpty() {
+    void shouldReturnTrueWhenFileToLoadFromIsEmpty() {
         RuntimeException exception = assertThrows(
                 RuntimeException.class, () -> FileBackedTaskManager.loadFromFile(file)
         );
@@ -40,7 +40,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void shouldReturnTrueIfFileIsEmpty() throws IOException {
+    void shouldReturnTrueIfFileIsEmpty() throws IOException {
         FileBackedTaskManager emptyManager = new FileBackedTaskManager(file);
         List<String> lines = Files.readAllLines(file.toPath());
 
@@ -48,7 +48,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedFromFile() throws IOException {
+    void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedFromFile() throws IOException {
         Task task = new Task("task", "task desc", Status.NEW);
         task.setId(1);
 
@@ -81,7 +81,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedToFile() throws IOException {
+    void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedToFile() throws IOException {
         manager = new FileBackedTaskManager(file);
         Task task = new Task("task", "task desc", Status.NEW);
         manager.addTask(task);

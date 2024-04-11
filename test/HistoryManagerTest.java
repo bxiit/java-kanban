@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HistoryManagerTest {
+class HistoryManagerTest {
     private static InMemoryHistoryManager inMemoryHistoryManager;
 
     @BeforeEach
@@ -28,17 +28,17 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldNotReturnNullOfInMemoryHistoryManager() {
+    void shouldNotReturnNullOfInMemoryHistoryManager() {
         assertNotNull(inMemoryHistoryManager.getHistory());
     }
 
     @Test
-    public void addHistory() {
+    void addHistory() {
         assertEquals(10, inMemoryHistoryManager.getHistory().size(), "History storage works incorrect");
     }
 
     @Test
-    public void removingFirstNodeInHistory() {
+    void removingFirstNodeInHistory() {
         Task first = inMemoryHistoryManager.getHistory().getFirst();
         inMemoryHistoryManager.remove(first.getId());
 
@@ -46,7 +46,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void removingLastNodeInHistory() {
+    void removingLastNodeInHistory() {
         Task last = inMemoryHistoryManager.getHistory().getLast();
         inMemoryHistoryManager.remove(last.getId());
 
@@ -54,7 +54,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void removingMiddleNodeInHistory() {
+    void removingMiddleNodeInHistory() {
         Task middleNode = inMemoryHistoryManager.getHistory().get(inMemoryHistoryManager.getHistory().size() / 2);
 
         inMemoryHistoryManager.remove(middleNode.getId());
@@ -63,7 +63,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void removingSingleNodeInHistory() {
+    void removingSingleNodeInHistory() {
         int size = inMemoryHistoryManager.getHistory().size();
         for (int i = 2; i <= size; i++) {
             inMemoryHistoryManager.remove(i);
@@ -76,7 +76,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldDeleteSubTaskWhenItsEpicIsDeleted() {
+    void shouldDeleteSubTaskWhenItsEpicIsDeleted() {
         TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic11", "epic11 desc");
         taskManager.addEpic(epic);
@@ -92,7 +92,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldKeepTheNewestVersionOfTaskIfTaskChangedByAnySetter() {
+    void shouldKeepTheNewestVersionOfTaskIfTaskChangedByAnySetter() {
         Task task = new Task("task11", "task11 desc", Status.NEW);
         task.setId(11);
 
@@ -110,7 +110,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldDeleteAllTasksFromHistoryWhenAllTasksAreDeleted() {
+    void shouldDeleteAllTasksFromHistoryWhenAllTasksAreDeleted() {
         TaskManager taskManager = Managers.getDefaultManager();
         Task task =  new Task("task to delete 1", "task to delete 1 desc", Status.NEW);
         task.setId(1);
@@ -125,7 +125,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldDeleteAllEpicsAndTheirSubTasksFromHistoryWhenAllEpicsWereDeleted() {
+    void shouldDeleteAllEpicsAndTheirSubTasksFromHistoryWhenAllEpicsWereDeleted() {
         TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic to delete 1", "epic to delete 1 desc");
         taskManager.addEpic(epic);
@@ -146,7 +146,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldDeleteAllSubTasksFromHistoryWhenAllSubTasksWereDeleted() {
+    void shouldDeleteAllSubTasksFromHistoryWhenAllSubTasksWereDeleted() {
         TaskManager taskManager = Managers.getDefaultManager();
         Epic epic = new Epic("epic to delete 1", "epic to delete 1 desc");
         taskManager.addEpic(epic);
@@ -167,7 +167,7 @@ public class HistoryManagerTest {
     }
 
     @Test
-    public void shouldBeFalseIfTheOrderOfHistoryIsWrong() {
+    void shouldBeFalseIfTheOrderOfHistoryIsWrong() {
         List<Task> history = inMemoryHistoryManager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             Task task = history.get(i);
