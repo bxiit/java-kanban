@@ -27,3 +27,13 @@ E
 src/task/SubTask.java,6\5\6560094c2d9d2c1abaaa1d784eb7f76d81554d68
 F
 src/task/TaskType.java,d\6\d6c5d12fd9a29779373ebd91973b3b5769ce6659
+8
+test.csv,1\9\19b883056c07067ff8919caf54289cc083a39a56
+W
+'src/exception/ManagerSaveException.java,d\7\d779cc10363b7b698ae1f16d7eb93bb5521f7d85
+I
+test/TaskManagerTest.java,4\a\4ad24bf0d6f74db95d2460064dff80e5df4606a8
+Q
+!test/InMemoryTaskManagerTest.java,f\5\f5a029b4aaf1fe7c0abe0d5a823fa4ab223ac09a
+=
+src/frfr.java,d\a\dad3b2737ebad84f1e6871d91663223de1825a90

@@ -1,6 +1,5 @@
 import manager.FileBackedTaskManager;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Status;
@@ -11,27 +10,32 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static File file;
-    private static FileBackedTaskManager manager;
 
-    @BeforeEach
-    public void init() {
+    private static FileBackedTaskManager fileBackedTaskManager;
+
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
         try {
             file = File.createTempFile("tempfile", ".txt");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return new FileBackedTaskManager(file);
     }
 
     @Test
-    void shouldReturnTrueWhenFileToLoadFromIsEmpty() {
+    void shouldReturnTrueWhenFileToLoadFromIsEmpty() throws IOException {
+        file = Files.createTempFile("test", ".csv").toFile();
         RuntimeException exception = assertThrows(
                 RuntimeException.class, () -> FileBackedTaskManager.loadFromFile(file)
         );
@@ -41,6 +45,7 @@ class FileBackedTaskManagerTest {
 
     @Test
     void shouldReturnTrueIfFileIsEmpty() throws IOException {
+        file = Files.createTempFile("test", ".csv").toFile();
         FileBackedTaskManager emptyManager = new FileBackedTaskManager(file);
         List<String> lines = Files.readAllLines(file.toPath());
 
@@ -49,55 +54,100 @@ class FileBackedTaskManagerTest {
 
     @Test
     void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedFromFile() throws IOException {
-        Task task = new Task("task", "task desc", Status.NEW);
-        task.setId(1);
+        file = Files.createTempFile("test", ".csv").toFile();
+        Task task = new Task(1L, "task", "task desc", Status.NEW,
+                Duration.ofMinutes(40), LocalDateTime.of(
+                2024, 4, 12, 20, 47
+        ));
 
-        Epic epic = new Epic("epic", "epic desc");
-        epic.setId(2);
+        Epic epic = new Epic(2L, "epic", "epic desc", Status.NEW,
+                Duration.ofHours(1).plusMinutes(30), LocalDateTime.of(
+                2025, 12, 12, 12, 12
+        ));
+        epic.addSubTaskId(3);
 
-        SubTask subTask = new SubTask("subtask", "subtask desc", epic.getId(), Status.NEW);
-        subTask.setId(3);
-        Files.writeString(file.toPath(), "id,type,name,status,description,epic\n", StandardOpenOption.APPEND);
-        Files.writeString(file.toPath(), "1,TASK,task,NEW,task desc,\n", StandardOpenOption.APPEND);
-        Files.writeString(file.toPath(), "2,EPIC,epic,NEW,epic desc,\n", StandardOpenOption.APPEND);
-        Files.writeString(file.toPath(), "3,SUBTASK,subtask,NEW,subtask desc,2,\n", StandardOpenOption.APPEND);
+        SubTask subTask = new SubTask(3L, "subtask", "subtask desc", epic.getId(), Status.NEW,
+                Duration.ofHours(1).plusMinutes(30), LocalDateTime.of(
+                2025, 12, 12, 12, 12
+        ));
+
+        Files.writeString(file.toPath(), "id,type,name,status,description,epic,duration,start_time\n",
+                StandardOpenOption.APPEND);
+        Files.writeString(file.toPath(), "1,TASK,task,NEW,task desc,,00:00:40,12.04.2024 - 20:47\n",
+                StandardOpenOption.APPEND);
+        Files.writeString(file.toPath(), "2,EPIC,epic,NEW,epic desc,,00:01:30,12.12.2025 - 12:12\n",
+                StandardOpenOption.APPEND);
+        Files.writeString(file.toPath(), "3,SUBTASK,subtask,NEW,subtask desc,2,00:01:30,12.12.2025 - 12:12\n",
+                StandardOpenOption.APPEND);
         Files.writeString(file.toPath(), "\n", StandardOpenOption.APPEND);
         Files.writeString(file.toPath(), "1,2,3", StandardOpenOption.APPEND);
 
-        manager = FileBackedTaskManager.loadFromFile(file);
+        fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
 
-        Task taskFromFile = manager.getTaskById(task.getId());
-        Epic epicFromFile = manager.getEpicById(epic.getId());
-        SubTask subTaskFromFile = manager.getSubTaskById(subTask.getId());
+        // Чтобы получения задач по айди для проверки не влияли на историю задач
+        List<Task> history = fileBackedTaskManager.getHistory();
+
+        Task taskFromFile = fileBackedTaskManager.getTaskById(task.getId()).orElseThrow();
+        Epic epicFromFile = fileBackedTaskManager.getEpicById(epic.getId()).orElseThrow();
+        SubTask subTaskFromFile = fileBackedTaskManager.getSubTaskById(subTask.getId()).orElseThrow();
 
         assertEquals(task, taskFromFile);
         assertEquals(epic, epicFromFile);
         assertEquals(subTask, subTaskFromFile);
 
-        List<Task> history = manager.getHistory();
+
         assertEquals(task, history.getFirst());
         assertEquals(epic, history.get((int) (epic.getId() - 1)));
         assertEquals(subTask, history.getLast());
+        assertEquals(3, history.size());
     }
 
     @Test
     void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedToFile() throws IOException {
-        manager = new FileBackedTaskManager(file);
+        fileBackedTaskManager = new FileBackedTaskManager(file);
         Task task = new Task("task", "task desc", Status.NEW);
-        manager.addTask(task);
+        fileBackedTaskManager.addTask(task);
         Epic epic = new Epic("epic", "epic desc");
-        manager.addEpic(epic);
+        fileBackedTaskManager.addEpic(epic);
         SubTask subTask = new SubTask("subtask", "subtask desc", epic.getId(), Status.NEW);
-        manager.addSubTask(subTask);
+        fileBackedTaskManager.addSubTask(subTask);
 
-        manager.getTaskById(task.getId());
-        manager.getEpicById(epic.getId());
+        fileBackedTaskManager.getTaskById(task.getId());
+        fileBackedTaskManager.getEpicById(epic.getId());
 
         List<String> lines = Files.readAllLines(file.toPath());
 
-        assertEquals("1,TASK,task,NEW,task desc,", lines.get(Math.toIntExact(task.getId())));
-        assertEquals("2,EPIC,epic,NEW,epic desc,", lines.get(Math.toIntExact(epic.getId())));
-        assertEquals("3,SUBTASK,subtask,NEW,subtask desc,2", lines.get(Math.toIntExact(subTask.getId())));
+        assertEquals("1,TASK,task,NEW,task desc,,,", lines.get(Math.toIntExact(task.getId())));
+        assertEquals("2,EPIC,epic,NEW,epic desc,,,", lines.get(Math.toIntExact(epic.getId())));
+        assertEquals("3,SUBTASK,subtask,NEW,subtask desc,2,,", lines.get(Math.toIntExact(subTask.getId())));
+
+        assertEquals("1,2", lines.getLast());
+    }
+
+    @Test
+    void shouldBeEqualIfTasksAndHistorySuccessfullyLoadedToFile_WithDurationAndStartTime() throws IOException {
+        fileBackedTaskManager = new FileBackedTaskManager(file);
+        Task task = new Task("task", "task desc", Status.NEW,
+                Duration.ofMinutes(30),
+                LocalDateTime.of(2024, 4, 15,
+                        0, 5));
+        fileBackedTaskManager.addTask(task);
+        Epic epic = new Epic("epic", "epic desc");
+        fileBackedTaskManager.addEpic(epic);
+        SubTask subTask = new SubTask("subtask", "subtask desc", epic.getId(), Status.NEW,
+                Duration.ofHours(1),
+                LocalDateTime.of(2025, 4, 15,
+                        0, 5));
+        fileBackedTaskManager.addSubTask(subTask);
+
+        fileBackedTaskManager.getTaskById(task.getId());
+        fileBackedTaskManager.getEpicById(epic.getId());
+
+        List<String> lines = Files.readAllLines(file.toPath());
+        //dd.MM.yyyy - HH:mm
+        assertEquals("1,TASK,task,NEW,task desc,,00:00:30,15.04.2024 - 00:05", lines.get(Math.toIntExact(task.getId())));
+        assertEquals("2,EPIC,epic,NEW,epic desc,,00:01:00,15.04.2025 - 00:05", lines.get(Math.toIntExact(epic.getId())));
+        assertEquals("3,SUBTASK,subtask,NEW,subtask desc,2,00:01:00,15.04.2025 - 00:05", lines.get(Math.toIntExact(subTask.getId())));
 
         assertEquals("1,2", lines.getLast());
     }
