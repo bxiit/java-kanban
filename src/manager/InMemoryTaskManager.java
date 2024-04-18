@@ -77,7 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
                     epics.get(subtask.getEpicId()).addSubTaskId(subtask.getId());
                     checkSubTasksStatus(subtask.getEpicId());
                 }
-                default -> throw new RuntimeException(STR."Неизвестный тип задачи: \{task.getType()}");
+                default -> throw new RuntimeException("Неизвестный тип задачи: " + task.getType());
             }
             return task.getId();
         }

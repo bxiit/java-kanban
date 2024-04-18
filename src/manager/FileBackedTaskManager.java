@@ -238,8 +238,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         try {
-            if (!Files.exists(file.toPath()) && !file.createNewFile()) {
-                System.out.println("Нельзя создать файл " + file.getName());
+            if (!Files.exists(file.toPath())) {
+                throw new RuntimeException("Нет файла " + file.getName());
             }
             FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
@@ -318,15 +318,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return task;
     }
 
+    private String localDateTimeToString(LocalDateTime localDateTime) {
+        return localDateTime.format(DATE_TIME_FORMATTER);
+    }
+
     private LocalDateTime localDateTimeFromString(String startTime) {
         if (startTime.isEmpty()) {
             return null;
         }
         return LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
-    }
-
-    private String localDateTimeToString(LocalDateTime localDateTime) {
-        return localDateTime.format(DATE_TIME_FORMATTER);
     }
 
     private Duration durationFromString(String duration) {
@@ -350,9 +350,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return "%02d:%02d:%02d".formatted(duration.toDays(), duration.toHours(), duration.toMinutesPart());
     }
 
-    private static String historyToString(HistoryManager manager) throws ManagerSaveException {
+    private static String historyToString(HistoryManager historyManager) throws ManagerSaveException {
         try {
-            List<Task> history = manager.getHistory();
+            List<Task> history = historyManager.getHistory();
             if (history.isEmpty()) {
                 return "";
             }
@@ -362,7 +362,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     .map(Object::toString)
                     .collect(Collectors.joining(","));
         } catch (Exception e) {
-            throw new ManagerSaveException("метод historyToString сработал некорректно");
+            throw new ManagerSaveException("Невалидный формат истории задач");
         }
     }
 

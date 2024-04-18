@@ -14,9 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static File file;
@@ -26,7 +24,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Override
     protected FileBackedTaskManager createTaskManager() {
         try {
-            file = File.createTempFile("tempfile", ".txt");
+            file = File.createTempFile("tempfile", ".csv");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,6 +98,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         assertEquals(epic, history.get((int) (epic.getId() - 1)));
         assertEquals(subTask, history.getLast());
         assertEquals(3, history.size());
+        assertDoesNotThrow(() -> FileBackedTaskManager.loadFromFile(file));
     }
 
     @Test
@@ -144,12 +143,27 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         fileBackedTaskManager.getEpicById(epic.getId());
 
         List<String> lines = Files.readAllLines(file.toPath());
-        //dd.MM.yyyy - HH:mm
         assertEquals("1,TASK,task,NEW,task desc,,00:00:30,15.04.2024 - 00:05", lines.get(Math.toIntExact(task.getId())));
         assertEquals("2,EPIC,epic,NEW,epic desc,,00:01:00,15.04.2025 - 00:05", lines.get(Math.toIntExact(epic.getId())));
         assertEquals("3,SUBTASK,subtask,NEW,subtask desc,2,00:01:00,15.04.2025 - 00:05", lines.get(Math.toIntExact(subTask.getId())));
 
         assertEquals("1,2", lines.getLast());
+    }
+
+    @Test
+    void loadFromFile_shouldThrowRuntimeExceptionWhenSaveFileDeleted() throws IOException {
+        file = Files.createTempFile("test_exception", ".csv").toFile();
+        boolean deleted = file.delete();
+
+        assertTrue(deleted);
+        assertThrows(RuntimeException.class, () -> FileBackedTaskManager.loadFromFile(file));
+    }
+
+    @Test
+    void loadFromFile_shouldThrowRuntimeExceptionWhenFileIsEmpty() throws IOException {
+        file = Files.createTempFile("test_exception", ".csv").toFile();
+
+        assertThrows(RuntimeException.class, () -> FileBackedTaskManager.loadFromFile(file));
     }
 
     @AfterEach

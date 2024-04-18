@@ -59,6 +59,9 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return STR."SubTask{epicId=\{epicId}, \{super.toString()}\{'}'}";
+        return "SubTask{" +
+               super.toString() +
+               "epicId=" + epicId +
+               '}';
     }
 }

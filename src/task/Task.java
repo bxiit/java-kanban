@@ -95,10 +95,6 @@ public class Task {
         return startTime;
     }
 
-//    public void setEndTime(LocalDateTime endTime) {
-//        this.startTime = endTime;
-//    }
-
     public LocalDateTime getEndTime() {
         return startTime.plus(duration);
     }
@@ -123,6 +119,13 @@ public class Task {
 
     @Override
     public String toString() {
-        return STR."Task{id=\{id}, name='\{name}\{'\''}, description='\{description}\{'\''}, status=\{status}, duration=\{duration}, startTime=\{startTime}\{'}'}";
+        return "Task{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", description='" + description + '\'' +
+               ", status=" + status +
+               ", duration=" + duration +
+               ", startTime=" + startTime +
+               '}';
     }
 }
