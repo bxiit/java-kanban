@@ -54,14 +54,11 @@ public class SubTask extends Task {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return super.hashCode() + Objects.hash(this.epicId);
     }
 
-//    @Override
-//    public String toString() {
-//        return "SubTask{" +
-//                "epicId=" + epicId +
-//                ", " + super.toString() +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return STR."SubTask{epicId=\{epicId}, \{super.toString()}\{'}'}";
+    }
 }

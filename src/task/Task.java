@@ -95,10 +95,11 @@ public class Task {
         return startTime;
     }
 
+//    public void setEndTime(LocalDateTime endTime) {
+//        this.startTime = endTime;
+//    }
+
     public LocalDateTime getEndTime() {
-        if (duration == null || startTime == null) {
-            return null;
-        }
         return startTime.plus(duration);
     }
 
@@ -115,9 +116,13 @@ public class Task {
                Objects.equals(this.duration, task.getDuration());
     }
 
-
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return STR."Task{id=\{id}, name='\{name}\{'\''}, description='\{description}\{'\''}, status=\{status}, duration=\{duration}, startTime=\{startTime}\{'}'}";
     }
 }

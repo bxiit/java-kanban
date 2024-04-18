@@ -3,7 +3,6 @@ package task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,39 +49,6 @@ public class Epic extends Task {
         subTasksIds.clear();
     }
 
-    public void setEarliestSubTask(List<SubTask> subTasks) {
-        Comparator<SubTask> comparator = (s1, s2) -> {
-            // Если даты и времени начала ИЛИ конца нет, то не сортируем
-            if (s1.getStartTime() == null || s2.getStartTime() == null ||
-                s1.getEndTime() == null || s2.getEndTime() == null) {
-                return 0;
-            }
-
-            return s1.getStartTime().compareTo(s2.getStartTime());
-        };
-        subTasks.sort(comparator);
-        setStartTime(subTasks.getFirst().getStartTime());
-    }
-
-    public void setLatestSubTask(List<SubTask> subTasks) {
-        Comparator<SubTask> comparator = (s1, s2) -> {
-            // Если даты и времени начала ИЛИ конца ИЛИ продолжительности нет, то не сортируем
-            if (s1.getStartTime() == null || s2.getStartTime() == null ||
-                s1.getEndTime() == null || s2.getEndTime() == null ||
-                s1.getDuration() == null || s2.getDuration() == null) {
-                return 0;
-            }
-            if (s1.getStartTime().plus(s1.getDuration()).isAfter(s2.getStartTime().plus(s2.getDuration())))
-                return 1;
-            else if (s1.getStartTime().plus(s2.getDuration()).isBefore(s2.getStartTime().plus(s1.getDuration())))
-                return -1;
-            else
-                return 0;
-        };
-        subTasks.sort(comparator);
-        setEndTime(subTasks.getLast().getEndTime());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,12 +63,8 @@ public class Epic extends Task {
         return super.hashCode();
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     @Override
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public String toString() {
+        return STR."Epic{\{super.toString()}subTasksIds=\{subTasksIds}, endTime=\{endTime}\{'}'}";
     }
 }

@@ -2,9 +2,17 @@ package manager;
 
 import exception.ManagerSaveException;
 import history.HistoryManager;
-import task.*;
+import task.Epic;
+import task.Status;
+import task.SubTask;
+import task.Task;
+import task.TaskType;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -246,7 +254,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     .forEach(line -> {
                         Task task = manager.fromString(line);
                         if (task.getStartTime() != null) {
-                            manager.sortedTasks.put(task, task.getStartTime());
+                            manager.sortedTasks.put(task.getStartTime(), task);
                         }
                         if (task instanceof SubTask subTask) {
                             manager.subtasks.put(subTask.getId(), subTask);

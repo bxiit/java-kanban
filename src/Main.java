@@ -2,7 +2,7 @@ import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import task.Epic;
 import task.Status;
-import task.SubTask;
+import task.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import java.time.Month;
 
 public class Main {
 
-    void main() {
+    public static void main(String[] args) {
         // Менеджер задач
         TaskManager taskManager = new InMemoryTaskManager();
 
@@ -18,21 +18,36 @@ public class Main {
                 1, 0, 0, 0);
         LocalDateTime february2024 = LocalDateTime.of(2024, Month.FEBRUARY,
                 1, 0, 0);
+        LocalDateTime march2024 = LocalDateTime.of(2024, Month.MARCH,
+                1, 0, 0, 0);
 
         Epic epic = new Epic("epic1", "epic1 desc");
         taskManager.addEpic(epic);
 
-        SubTask subTask1 = new SubTask("subtask3", "subtask3 desc", epic.getId(),
+        Task task1 = new Task("task3", "task3 desc",
                 Status.IN_PROGRESS, Duration.ofDays(60), january2024);
-        // subtask2 пересекает subtask1
-        SubTask subTask2 = new SubTask("subtask2", "subtask2 desc", epic.getId(),
+        // task2 пересекает task1
+        Task task2 = new Task("task2", "task2 desc",
                 Status.IN_PROGRESS, Duration.ofDays(60), february2024);
 
-        taskManager.addSubTask(subTask1);
-        taskManager.addSubTask(subTask2);
+        Task taskWithoutTime = new Task("task without time", "task without time desc",
+                Status.IN_PROGRESS);
 
-        taskManager.printAllSubTasks();
+        Task task3 = new Task("task march", "task march desc",
+                Status.IN_PROGRESS, Duration.ofDays(7), march2024);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(taskWithoutTime);
+        taskManager.addTask(task3);
 
-        System.out.println(taskManager.getAllSubTasks().size());
+        System.out.println("PRINT ALL TASKS");
+        taskManager.printAllTasks();
+        System.out.println("PRIORITIZED TASKS");
+        taskManager.getPrioritizedTasks().forEach(System.out::println);
+
+        taskManager.deleteAllTasks();
+
+        System.out.println("PRIORITIZED TASKS");
+        taskManager.getPrioritizedTasks().forEach(System.out::println);
     }
 }

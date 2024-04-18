@@ -31,7 +31,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void addTask_ShouldReturnAddedTaskFromManager() {
         manager.addEpic(new Epic("epic", "epic desc"));
-        System.out.println(manager);
         Optional<Epic> epicById = manager.getEpicById(11);
 
         assertTrue(epicById.isPresent());
@@ -339,5 +338,30 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.addSubTask(subTask2);
 
         assertEquals(1, manager.getAllSubTasks().size());
+    }
+
+    @Test
+    void setEarliestSubTaskOfEpic_ShouldSetEarliestAndEndTimeOfEpic() {
+        Epic epic = new Epic("epic1", "epic1 desc");
+        manager.addEpic(epic);
+        SubTask subTask = new SubTask("subtask", "subtask desc", epic.getId(), Status.NEW,
+                Duration.ofMinutes(30), LocalDateTime.of(
+                        2024, Month.JANUARY, 1, 12, 0
+        ));
+        SubTask subTask1 = new SubTask("subtask1", "subtask1 desc", epic.getId(), Status.NEW,
+                Duration.ofMinutes(30), LocalDateTime.of(
+                        2024, Month.JANUARY, 1, 15, 0
+        ));
+        SubTask subTask2 = new SubTask("subtask2", "subtask2 desc", epic.getId(), Status.NEW);
+        manager.addSubTask(subTask1);
+        manager.addSubTask(subTask2);
+        manager.addSubTask(subTask);
+
+        final Optional<Epic> epicById = manager.getEpicById(11);
+        assertTrue(epicById.isPresent());
+        assertEquals(Duration.ofHours(3).plusMinutes(30), epicById.get().getDuration());
+        assertEquals(LocalDateTime.of(
+                2024, Month.JANUARY, 1, 15, 30
+        ) , epicById.get().getEndTime());
     }
 }
