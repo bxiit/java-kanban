@@ -1,11 +1,22 @@
 package manager;
 
 import history.HistoryManager;
-import task.*;
+import task.Epic;
+import task.Status;
+import task.SubTask;
+import task.Task;
+import task.TaskType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -117,7 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (task.getStartTime() == null) {
                 return;
             }
-            sortedTasks.remove(task.getId(), task);
+            deleteTaskFromSortedTasks(task);
             sortedTasks.put(task.getStartTime(), task);
         }
     }
@@ -285,7 +296,6 @@ public class InMemoryTaskManager implements TaskManager {
             if (subTask.getStartTime() == null) {
                 return;
             }
-//            sortedTasks.remove(subTask.getStartTime());
             deleteTaskFromSortedTasks(subTask);
         }
     }
