@@ -1,21 +1,27 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 public class Epic extends Task {
-    private final Set<Long> subTasksIds;
+    private final List<Long> subTasksIds = new ArrayList<>();
+
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
-        subTasksIds = new HashSet<>();
     }
 
     public Epic(Long id, String name, String description, Status status) {
         super(id, name, description, status);
-        this.subTasksIds = new HashSet<>();
+    }
+
+    public Epic(Long id, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        super(id, name, description, status, duration, startTime);
+        endTime = startTime.plus(duration);
     }
 
     public List<Long> getSubTasksIds() {
@@ -36,9 +42,7 @@ public class Epic extends Task {
     }
 
     public void deleteSubTaskId(long id) {
-        if (subTasksIds.contains(id)) {
-            subTasksIds.remove(id);
-        }
+        subTasksIds.remove(id);
     }
 
     public void deleteAllSubTaskIds() {
@@ -46,10 +50,25 @@ public class Epic extends Task {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Epic epic = (Epic) o;
+        return super.equals(epic) &&
+               Objects.equals(this.subTasksIds, epic.getSubTasksIds());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
-                super.toString() +
-                ", subTasks ID's=" + subTasksIds +
-                '}';
+               super.toString() +
+               "subTasksIds=" + subTasksIds +
+               ", endTime=" + endTime +
+               '}';
     }
 }

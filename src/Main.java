@@ -1,13 +1,12 @@
-import manager.FileBackedTaskManager;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import task.Epic;
 import task.Status;
-import task.SubTask;
 import task.Task;
 
-import java.io.File;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 public class Main {
 
@@ -15,50 +14,40 @@ public class Main {
         // Менеджер задач
         TaskManager taskManager = new InMemoryTaskManager();
 
+        LocalDateTime january2024 = LocalDateTime.of(2024, Month.JANUARY,
+                1, 0, 0, 0);
+        LocalDateTime february2024 = LocalDateTime.of(2024, Month.FEBRUARY,
+                1, 0, 0);
+        LocalDateTime march2024 = LocalDateTime.of(2024, Month.MARCH,
+                1, 0, 0, 0);
 
-        // Создание задач
-        Epic epic1 = new Epic("Epic1", "Epic1 desc");
-        Epic epic2 = new Epic("Epic2", "Epic2 desc");
-        taskManager.addEpic(epic1);
-        taskManager.addEpic(epic2);
+        Epic epic = new Epic("epic1", "epic1 desc");
+        taskManager.addEpic(epic);
 
-        SubTask subTask3 = new SubTask("SubTask3", "SubTask3 desc", epic1.getId(), Status.NEW);
-        SubTask subTask4 = new SubTask("SubTask4", "SubTask4 desc", epic1.getId(), Status.NEW);
-        SubTask subTask5 = new SubTask("SubTask5", "SubTask5 desc", epic1.getId(), Status.NEW);
+        Task task1 = new Task("task3", "task3 desc",
+                Status.IN_PROGRESS, Duration.ofDays(60), january2024);
+        // task2 пересекает task1
+        Task task2 = new Task("task2", "task2 desc",
+                Status.IN_PROGRESS, Duration.ofDays(60), february2024);
 
-        taskManager.addSubTask(subTask3);
-        taskManager.addSubTask(subTask4);
-        taskManager.addSubTask(subTask5);
+        Task taskWithoutTime = new Task("task without time", "task without time desc",
+                Status.IN_PROGRESS);
 
-        taskManager.getEpicById(1);
-        taskManager.getEpicById(2);
-        taskManager.getEpicById(1);
+        Task task3 = new Task("task march", "task march desc",
+                Status.IN_PROGRESS, Duration.ofDays(7), march2024);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(taskWithoutTime);
+        taskManager.addTask(task3);
 
-        taskManager.getSubTaskById(3);
-        taskManager.getSubTaskById(5);
-        taskManager.getSubTaskById(3);
-        taskManager.getSubTaskById(4);
+        System.out.println("PRINT ALL TASKS");
+        taskManager.printAllTasks();
+        System.out.println("PRIORITIZED TASKS");
+        taskManager.getPrioritizedTasks().forEach(System.out::println);
 
-        List<Task> history = taskManager.getHistory();
+        taskManager.deleteAllTasks();
 
-        System.out.println("PRINTING HISTORY");
-        for (Task task : history) {
-            System.out.println(task);
-        }
-
-        taskManager.deleteEpicById(1);
-//        taskManager.deleteSubTaskById(3);
-
-        List<Task> historyAfterDeletingAnEpic = taskManager.getHistory();
-
-        System.out.println("PRINTING HISTORY");
-        for (Task task : historyAfterDeletingAnEpic) {
-            System.out.println(task);
-        }
-
-
-
-        File file = new File("test.txt");
-        TaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
+        System.out.println("PRIORITIZED TASKS");
+        taskManager.getPrioritizedTasks().forEach(System.out::println);
     }
 }
