@@ -1,16 +1,20 @@
+import com.sun.net.httpserver.HttpServer;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import server.HttpTaskServer;
 import task.Epic;
 import task.Status;
 import task.Task;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Менеджер задач
         TaskManager taskManager = new InMemoryTaskManager();
 
@@ -45,9 +49,12 @@ public class Main {
         System.out.println("PRIORITIZED TASKS");
         taskManager.getPrioritizedTasks().forEach(System.out::println);
 
-        taskManager.deleteAllTasks();
+//        taskManager.deleteAllTasks();
 
         System.out.println("PRIORITIZED TASKS");
         taskManager.getPrioritizedTasks().forEach(System.out::println);
+
+        HttpTaskServer server = new HttpTaskServer(taskManager);
+        server.listenAndServe();
     }
 }

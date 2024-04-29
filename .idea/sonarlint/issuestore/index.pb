@@ -35,3 +35,25 @@ I
 test/TaskManagerTest.java,4\a\4ad24bf0d6f74db95d2460064dff80e5df4606a8
 Q
 !test/InMemoryTaskManagerTest.java,f\5\f5a029b4aaf1fe7c0abe0d5a823fa4ab223ac09a
+G
+src/HttpTaskServer.java,5\0\504895c5e6a05b1039b5646df83050841ce93a93
+P
+ src/handler/BaseHttpHandler.java,8\8\88c2957a83dc3acc088777366d3f2fe606ec043b
+T
+$src/exception/NotFoundException.java,6\f\6f8a1aa7e47aa7a00d023ae01b96322e61bfde34
+L
+src/handler/TaskHandler.java,5\7\570b46e05c8a7a1aa04a8811afca11ac6cc236d3
+L
+src/handler/UserHandler.java,7\1\71b0aa1981736ed2f7aa8c2abea0400532f3d6a1
+L
+src/handler/HttpMethods.java,a\f\af12a69a2abe13d71c78637be8957c565f152bcc
+U
+%src/adapter/LocalDateTimeAdapter.java,f\6\f66ff907a763f92ad62688b14f8a93fbba9543a2
+P
+ src/token/TaskListTypeToken.java,6\1\6145db8a663a2c967a40b85ba3fb1541cd7aea26
+P
+ src/adapter/DurationAdapter.java,5\0\5090071c55b4ce57570653411871518fe3a5b737
+N
+src/server/HttpTaskServer.java,5\d\5da536c50dbf37b3b318e55abab2c3b6fb8a98fc
+S
+#test/server/HttpTaskServerTest.java,6\f\6fa4f651d732f0c1be50ff8866bcb50caaee6b54

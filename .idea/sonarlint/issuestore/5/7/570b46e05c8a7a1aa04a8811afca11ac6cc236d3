@@ -1,0 +1,22 @@
+
+‘
+java:S1192)"IDefine a constant instead of duplicating this literal "subtasks" 5 times.(Ô£ûˆøÿÿÿÿ8Á¾ëÍò1J$b4389929-cdc6-4495-b055-c81a5813480c
+
+java:S1192'"FDefine a constant instead of duplicating this literal "epics" 5 times.(ÃÎŞÎüÿÿÿÿ8Â¾ëÍò1J$e45779f1-fd41-4195-906f-513b3456b3de
+
+java:S1192%"FDefine a constant instead of duplicating this literal "tasks" 5 times.(ÅÛî¬ıÿÿÿÿ8Â¾ëÍò1J$74327008-2d69-460a-9c25-900182afc064
+‹
+java:S2259e"CA "NullPointerException" could be thrown; "aTask" is nullable here.(ó£•ñşÿÿÿÿ8ï¾ëÍò1J$0f1f1cc0-1aa0-46c3-8eab-57316326b7ee
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(‰Å×Ãûÿÿÿÿ8ò¾ëÍò1J$a8a3f087-e40d-469b-b9f8-049cc408eb3f
+š
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 38 to the 15 allowed.(Ó½¿£ûÿÿÿÿ8ô¾ëÍò1J$c5c20306-f3ec-44a6-9d9e-e6aa5469960d
+™
+java:S4276b"WRefactor this code to use the more specialised Functional Interface 'ToLongFunction<T>'(Àô›<8ü¾ëÍò1J$e94fc37d-565f-4171-aafc-977ea45f4772
+£
+java:S4276l"[Refactor this code to use the more specialised Functional Interface 'IntFunction<Optional>'(‰èËüüÿÿÿÿ8ı¾ëÍò1J$54344e18-275e-4a1d-915d-b453e842825f
+q
+java:S1172}")Remove this unused method parameter "id".(«ƒÍüşÿÿÿÿ8ÿ¾ëÍò1J$6ba66e8f-0ac4-49f8-8076-b731bbd7cd65
+š
+java:S4276„"QRefactor this code to use the more specialised Functional Interface 'IntConsumer'(œ¸Öûùÿÿÿÿ8¿ëÍò1J$e9c20742-625d-45b3-b411-b2558720d269
+y
+java:S1144¢"0Remove this unused private "fillManager" method.(°Û´”ùÿÿÿÿ8†¿ëÍò1J$8afe2d81-7984-48a0-a4c4-0c9c53dcc59b

@@ -1,6 +1,7 @@
 package manager;
 
 import exception.ManagerSaveException;
+import exception.NotFoundException;
 import history.HistoryManager;
 import task.Epic;
 import task.Status;
@@ -57,8 +58,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Optional<Task> getTaskById(long id) {
-        Optional<Task> task = super.getTaskById(id);
+        Optional<Task> task;
         try {
+            task = super.getTaskById(id);
             save();
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);

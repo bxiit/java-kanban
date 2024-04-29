@@ -1,5 +1,6 @@
 package manager;
 
+import exception.NotFoundException;
 import history.HistoryManager;
 import task.Epic;
 import task.Status;

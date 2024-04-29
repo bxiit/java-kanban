@@ -1,3 +1,4 @@
+import exception.NotFoundException;
 import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
 import task.Epic;
@@ -48,7 +49,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void shouldReturnTaskById() {
+    void shouldReturnTaskById() throws NotFoundException {
         Optional<Task> task5 = manager.getTaskById(5);
 
         assertTrue(task5.isPresent());
@@ -67,7 +68,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void addNewTask() {
+    void addNewTask() throws NotFoundException {
         Task task = new Task("addtest",
                 "addtest description",
                 Status.NEW);
@@ -84,7 +85,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void shouldBeTheSameTaskWhenAddedByTaskManager() {
+    void shouldBeTheSameTaskWhenAddedByTaskManager() throws NotFoundException {
         Task task = new Task("task11", "task11 desc", Status.NEW);
         manager.addTask(task);
 
