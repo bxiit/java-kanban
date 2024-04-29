@@ -4,15 +4,12 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 import task.Epic;
-import task.Status;
 import task.SubTask;
 import task.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,7 +21,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     public TaskHandler(TaskManager manager) {
         this.manager = manager;
-//        fillManager();
     }
 
     @Override
@@ -93,7 +89,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-
     // CREATE
     private <T> void createATask(HttpExchange h, Function<T, Long> function, Class<T> aClass) {
         T aTask = extractATaskFromBody(h, aClass);
@@ -119,7 +114,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         String allTheTasks = gson.toJson(t);
         sendText(h, 200, allTheTasks);
     }
-
 
     // UPDATE
     private <T> void updateATask(HttpExchange h, Integer id, Consumer<T> function, Class<T> aClass) {
@@ -147,7 +141,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private <T> T extractATaskFromBody(HttpExchange h, Class<T> aClass) {
         T aTask = null;
-        try(InputStream requestBody = h.getRequestBody()) {
+
+        try (InputStream requestBody = h.getRequestBody()) {
             String taskFromReqBody = new String(requestBody.readAllBytes(), StandardCharsets.UTF_8);
             aTask = gson.fromJson(taskFromReqBody, aClass);
         } catch (IOException e) {
@@ -157,29 +152,5 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             sendNotFound(h);
         }
         return aTask;
-    }
-
-    private void fillManager() {
-        if (!manager.getAllTasks().isEmpty()) {
-            return;
-        }
-        Task task = new Task("task1", "task1 desc", Status.NEW);
-        manager.addTask(task);
-        Epic epic1 = new Epic("epic1", "epic1 desc");
-        manager.addEpic(epic1);
-        SubTask subTask1 = new SubTask("subtask1", "subtask1 desc", epic1.getId(), Status.NEW);
-        SubTask subTask2 = new SubTask("subtask2", "subtask2 desc", epic1.getId(), Status.NEW);
-        manager.addSubTask(subTask1);
-        manager.addSubTask(subTask2);
-        Epic epic2 = new Epic("epic2", "epic2 desc");
-        manager.addEpic(epic2);
-        SubTask subTask3 = new SubTask("subtask3", "subtask3 desc", epic2.getId(), Status.IN_PROGRESS,
-                Duration.ofMinutes(40), LocalDateTime.now());
-        SubTask subTask4 = new SubTask("subtask4", "subtask4 desc", epic2.getId(), Status.IN_PROGRESS,
-                Duration.ofMinutes(30), LocalDateTime.of(
-                        2024, 4, 30, 15,0
-        ));
-        manager.addSubTask(subTask3);
-        manager.addSubTask(subTask4);
     }
 }

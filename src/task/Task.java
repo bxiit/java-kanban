@@ -13,7 +13,8 @@ public class Task {
     private Duration duration;
     private LocalDateTime startTime;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(String name, String description, Status status) {
         this.name = name;

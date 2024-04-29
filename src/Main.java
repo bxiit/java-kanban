@@ -1,4 +1,3 @@
-import com.sun.net.httpserver.HttpServer;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import server.HttpTaskServer;
@@ -7,7 +6,6 @@ import task.Status;
 import task.Task;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
