@@ -35,8 +35,6 @@ I
 test/TaskManagerTest.java,4\a\4ad24bf0d6f74db95d2460064dff80e5df4606a8
 Q
 !test/InMemoryTaskManagerTest.java,f\5\f5a029b4aaf1fe7c0abe0d5a823fa4ab223ac09a
-G
-src/HttpTaskServer.java,5\0\504895c5e6a05b1039b5646df83050841ce93a93
 P
  src/handler/BaseHttpHandler.java,8\8\88c2957a83dc3acc088777366d3f2fe606ec043b
 T

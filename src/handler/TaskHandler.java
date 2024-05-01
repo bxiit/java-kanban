@@ -17,6 +17,11 @@ import java.util.function.Supplier;
 
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
+    public static final String EPICS = "epics";
+    public static final String TASKS = "tasks";
+    public static final String SUBTASKS = "subtasks";
+    public static final int GET_ALL_LENGTH = 2;
+    public static final int GET_BY_ID_LENGTH = 3;
     private final TaskManager manager;
 
     public TaskHandler(TaskManager manager) {
@@ -28,64 +33,77 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         HttpMethods method = getMethod(h);
         String[] pathSplit = h.getRequestURI().getPath().split("/");
         switch (method) {
-            case POST: {
-                if (pathSplit.length == 2) {
-                    if ("tasks".equals(pathSplit[1])) {
-                        createATask(h, manager::addTask, Task.class);
-                    } else if ("epics".equals(pathSplit[1])) {
-                        createATask(h, manager::addEpic, Epic.class);
-                    } else if ("subtasks".equals(pathSplit[1])) {
-                        createATask(h, manager::addSubTask, SubTask.class);
-                    } else {
-                        sendNotFound(h);
-                    }
-                } else if (pathSplit.length == 3) {
-                    Integer id = extractId(h, pathSplit[2]);
-                    if ("tasks".equals(pathSplit[1])) {
-                        updateATask(h, id, manager::updateTask, Task.class);
-                    } else if ("epics".equals(pathSplit[1])) {
-                        updateATask(h, id, manager::updateEpic, Epic.class);
-                    } else if ("subtasks".equals(pathSplit[1])) {
-                        updateATask(h, id, manager::updateSubTask, SubTask.class);
-                    } else {
-                        sendNotFound(h);
-                    }
-                }
-                break;
-            }
-            case GET: {
-                if (pathSplit.length == 2 && "tasks".equals(pathSplit[1])) {
-                    getAllTheTasks(h, manager::getAllTasks);
-                } else if (pathSplit.length == 2 && "epics".equals(pathSplit[1])) {
-                    getAllTheTasks(h, manager::getAllEpics);
-                } else if (pathSplit.length == 2 && "subtasks".equals(pathSplit[1])) {
-                    getAllTheTasks(h, manager::getAllSubTasks);
-                } else if (pathSplit.length == 3 && "tasks".equals(pathSplit[1])) {
-                    getATaskById(h, pathSplit[2], manager::getTaskById);
-                } else if (pathSplit.length == 3 && "epics".equals(pathSplit[1])) {
-                    getATaskById(h, pathSplit[2], manager::getEpicById);
-                } else if (pathSplit.length == 3 && "subtasks".equals(pathSplit[1])) {
-                    getATaskById(h, pathSplit[2], manager::getSubTaskById);
-                } else {
-                    sendNotFound(h);
-                }
-                break;
-            }
-            case DELETE: {
-                if (pathSplit.length == 3 && "tasks".equals(pathSplit[1])) {
-                    deleteATaskById(h, pathSplit[2], manager::deleteTaskById);
-                } else if (pathSplit.length == 3 && "epics".equals(pathSplit[1])) {
-                    deleteATaskById(h, pathSplit[2], manager::deleteEpicById);
-                } else if (pathSplit.length == 3 && "subtasks".equals(pathSplit[1])) {
-                    deleteATaskById(h, pathSplit[2], manager::deleteSubTaskById);
-                } else {
-                    sendNotFound(h);
-                }
-                break;
-            }
-            default: {
-                throw new RuntimeException("Неизвестный метод " + method);
-            }
+            case POST -> handlePost(h, pathSplit);
+            case GET -> handleGet(h, pathSplit);
+            case DELETE -> handleDelete(h, pathSplit);
+            default -> throw new RuntimeException("Неизвестный метод " + method);
+        }
+    }
+
+    // HANDLERS BY METHOD
+    private void handlePost(HttpExchange h, String[] pathSplit) {
+        switch (pathSplit.length) {
+            case GET_ALL_LENGTH -> handlePostCreate(h, pathSplit);
+            case GET_BY_ID_LENGTH -> handlePostUpdate(h, pathSplit);
+            default -> sendNotFound(h);
+        }
+    }
+
+    private void handlePostCreate(HttpExchange h, String[] pathSplit) {
+        switch (pathSplit[1]) {
+            case TASKS -> createATask(h, manager::addTask, Task.class);
+            case EPICS -> createATask(h, manager::addEpic, Epic.class);
+            case SUBTASKS -> createATask(h, manager::addSubTask, SubTask.class);
+            case null, default -> sendNotFound(h);
+        }
+    }
+
+    private void handlePostUpdate(HttpExchange h, String[] pathSplit) {
+        Integer id = extractId(h, pathSplit[GET_ALL_LENGTH]);
+        switch (pathSplit[1]) {
+            case TASKS -> updateATask(h, id, manager::updateTask, Task.class);
+            case EPICS -> updateATask(h, id, manager::updateEpic, Epic.class);
+            case SUBTASKS -> updateATask(h, id, manager::updateSubTask, SubTask.class);
+            case null, default -> sendNotFound(h);
+        }
+    }
+
+    private void handleGet(HttpExchange h, String[] pathSplit) {
+        switch (pathSplit.length) {
+            case GET_ALL_LENGTH -> handleGetAll(h, pathSplit);
+            case GET_BY_ID_LENGTH -> handleGetById(h, pathSplit);
+            default -> sendNotFound(h);
+        }
+    }
+
+    private void handleGetById(HttpExchange h, String[] pathSplit) {
+        switch (pathSplit[1]) {
+            case TASKS -> getATaskById(h, pathSplit[GET_ALL_LENGTH], manager::getTaskById);
+            case EPICS -> getATaskById(h, pathSplit[GET_ALL_LENGTH], manager::getEpicById);
+            case SUBTASKS -> getATaskById(h, pathSplit[GET_ALL_LENGTH], manager::getSubTaskById);
+            default -> sendNotFound(h);
+        }
+    }
+
+    private void handleGetAll(HttpExchange h, String[] pathSplit) {
+        switch (pathSplit[1]) {
+            case TASKS -> getAllTheTasks(h, manager::getAllTasks);
+            case EPICS -> getAllTheTasks(h, manager::getAllEpics);
+            case SUBTASKS -> getAllTheTasks(h, manager::getAllSubTasks);
+            default -> sendNotFound(h);
+        }
+    }
+
+    private void handleDelete(HttpExchange h, String[] pathSplit) {
+        if (pathSplit.length != GET_BY_ID_LENGTH) {
+            sendNotFound(h);
+            return;
+        }
+        switch (pathSplit[1]) {
+            case TASKS -> deleteATaskById(h, pathSplit[GET_ALL_LENGTH], manager::deleteTaskById);
+            case EPICS -> deleteATaskById(h, pathSplit[GET_ALL_LENGTH], manager::deleteEpicById);
+            case SUBTASKS -> deleteATaskById(h, pathSplit[GET_ALL_LENGTH], manager::deleteSubTaskById);
+            default -> sendNotFound(h);
         }
     }
 

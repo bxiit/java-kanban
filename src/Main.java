@@ -47,8 +47,6 @@ public class Main {
         System.out.println("PRIORITIZED TASKS");
         taskManager.getPrioritizedTasks().forEach(System.out::println);
 
-//        taskManager.deleteAllTasks();
-
         System.out.println("PRIORITIZED TASKS");
         taskManager.getPrioritizedTasks().forEach(System.out::println);
 

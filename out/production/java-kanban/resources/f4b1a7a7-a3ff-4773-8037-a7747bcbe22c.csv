@@ -1,9 +1,0 @@
-id,type,name,status,description,epic,duration,start_time
-1,TASK,task1,NEW,task1 desc,,,
-2,EPIC,epic1,NEW,epic1 desc,,,
-5,EPIC,epic2,IN_PROGRESS,epic2 desc,,01:35:53,29.04.2024 - 03:36
-3,SUBTASK,subtask1,NEW,subtask1 desc,2,,
-4,SUBTASK,subtask2,NEW,subtask2 desc,2,,
-6,SUBTASK,subtask3 updated,IN_PROGRESS,subtask3 desc updated,5,00:00:40,29.04.2024 - 03:36
-7,SUBTASK,subtask4,IN_PROGRESS,subtask4 desc,5,00:00:30,30.04.2024 - 15:00
-
