@@ -2,17 +2,9 @@ package manager;
 
 import exception.ManagerSaveException;
 import history.HistoryManager;
-import task.Epic;
-import task.Status;
-import task.SubTask;
-import task.Task;
-import task.TaskType;
+import task.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -57,8 +49,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Optional<Task> getTaskById(long id) {
-        Optional<Task> task = super.getTaskById(id);
+        Optional<Task> task;
         try {
+            task = super.getTaskById(id);
             save();
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);

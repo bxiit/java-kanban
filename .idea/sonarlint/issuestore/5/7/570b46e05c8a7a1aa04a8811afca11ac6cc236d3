@@ -1,0 +1,17 @@
+
+‘
+java:S11924"IDefine a constant instead of duplicating this literal "subtasks" 5 times.(Ãã©àúÿÿÿÿ8Ş²½Øò1J$f2852d6c-29fd-47d3-98a0-b79ea1d39e79
+‰
+java:S11923"FDefine a constant instead of duplicating this literal "epics" 5 times.(†€Îì8Ş²½Øò1J$d1facba6-b79a-466a-95cb-17e96d6981b5
+‰
+java:S11922"FDefine a constant instead of duplicating this literal "tasks" 5 times.(ˆ–êş8Ş²½Øò1J$b346623f-2abc-43cd-9175-83be32fa609e
+e
+java:S2259n"CA "NullPointerException" could be thrown; "aTask" is nullable here.(ó£•ñşÿÿÿÿ8‹œÅØò1
+s
+java:S4276k"WRefactor this code to use the more specialised Functional Interface 'ToLongFunction<T>'(Àô›<8ŸœÅØò1
+}
+java:S4276u"[Refactor this code to use the more specialised Functional Interface 'IntFunction<Optional>'(‰èËüüÿÿÿÿ8¢œÅØò1
+L
+java:S1172…")Remove this unused method parameter "id".(«ƒÍüşÿÿÿÿ8¤œÅØò1
+t
+java:S4276Œ"QRefactor this code to use the more specialised Functional Interface 'IntConsumer'(œ¸Öûùÿÿÿÿ8§œÅØò1

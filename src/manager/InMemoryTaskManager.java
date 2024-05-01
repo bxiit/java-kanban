@@ -1,22 +1,11 @@
 package manager;
 
 import history.HistoryManager;
-import task.Epic;
-import task.Status;
-import task.SubTask;
-import task.Task;
-import task.TaskType;
+import task.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
